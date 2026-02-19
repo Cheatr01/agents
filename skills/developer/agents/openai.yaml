@@ -1,0 +1,4 @@
+skill:
+  display_name: Developer
+  short_description: Run end-to-end delivery from branch setup to final sign-off
+  default_prompt: Execute this task with the developer skill workflow: branch first, tech lead plan, implementation, testing, technical review, security review, and final tech lead acceptance.

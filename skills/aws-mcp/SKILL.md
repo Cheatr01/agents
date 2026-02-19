@@ -34,11 +34,18 @@ Before ANY write operation, confirm or infer from MCP context (in this order):
 
 If any of these are missing and the request is not strictly read-only, ask targeted questions.
 
+## Region Default
+
+- Default AWS region is `eu-west-1`.
+- If the user does not explicitly specify a region, always run read/write queries against `eu-west-1`.
+- If the user specifies a different region, use that region for the requested scope.
+
 ## Tooling Policy
 
 - Use MCP tools/servers configured in the host (e.g., AWS MCP servers from awslabs/mcp or an IAM-secured proxy).
 - Do NOT invent tool names. Discover available tools via the MCP client’s tool listing and adapt.
 - For AWS documentation, best practices, and region/service availability, prefer the AWS Knowledge MCP Server when available.
+- When region is omitted, set/request region as `eu-west-1` in tool calls by default.
 
 ## Safety Guardrails (Non-negotiable)
 
@@ -70,7 +77,7 @@ When actions may increase cost (NAT gateways, large instances, cross-region traf
 ## Default Workflow
 
 ### A) Diagnose / Inspect (read-only)
-1. Identify account + region
+1. Identify account + region (default to `eu-west-1` if user did not specify)
 2. List and locate the target resource(s)
 3. Fetch current configuration
 4. Summarize findings + risks
@@ -85,7 +92,7 @@ When actions may increase cost (NAT gateways, large instances, cross-region traf
 ### C) Apply
 1. Reconfirm:
    - account
-   - region
+   - region (`eu-west-1` by default if not user-specified)
    - resource identifiers
    - expected outcome
 2. Execute minimal change
