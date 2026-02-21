@@ -1,6 +1,6 @@
 ---
 name: developer
-description: "End-to-end delivery workflow for software tasks with explicit role stages: create a task-based branch first, perform tech lead planning and handoff, implement as developer, build and run unit and integration tests as automation tester, fix issues from technical review, fix issues from security review, and finish with final tech lead acceptance. Use when the user asks for complete delivery with planning, implementation, testing, reviews, and final quality sign-off."
+description: End-to-end delivery workflow for software tasks with explicit role stages, create a task-based branch first, perform tech lead planning and handoff, implement as developer, build and run unit and integration tests as automation tester, fix issues from technical review, fix issues from security review, and finish with final tech lead acceptance. Use when the user asks for complete delivery with planning, implementation, testing, reviews, and final quality sign-off.
 ---
 
 # Developer Skill
