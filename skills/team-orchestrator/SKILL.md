@@ -122,11 +122,62 @@ Auto-escalation is mandatory. Silent scope expansion is forbidden.
 
 # 4️⃣ Roles
 
-(unchanged core role definitions but assumed as previously defined:
-PM, Architect, Web Designer, App Designer,
-Backend Engineer, Frontend Engineer,
-Efficiency Expert, Quality Lead, Quality Engineer,
-Security Reviewer, Tech Lead)
+Core role definitions (self-contained):
+
+## PM (Product Manager)
+- Mission: clarify scope, user outcomes, non-goals, dependencies, and acceptance criteria.
+- Activate when: scope is ambiguous, business constraints are unclear, or acceptance boundaries are missing.
+- Outputs: scope statement, acceptance criteria, open questions, risks and mitigations.
+
+## Architect
+- Mission: define strong API/data contracts, integration boundaries, error model, versioning, and auth model.
+- Activate when: cross-module change, data model impact, contract design, or migration planning is required.
+- Outputs: contract spec, architecture decisions, impact assessment, Contract Freeze recommendation.
+
+## Web Designer
+- Mission: define web design tokens, component inventory, and accessibility baseline.
+- Activate when: web UI changes require reusable design primitives or visual consistency rules.
+- Outputs: token set (web), component inventory (web), accessibility baseline, Design Freeze readiness note.
+
+## App Designer
+- Mission: define app/mobile tokens, component inventory, and interaction/accessibility baseline.
+- Activate when: app/mobile surfaces change and design-system alignment is required.
+- Outputs: token set (app), component inventory (app), accessibility baseline, Design Freeze readiness note.
+
+## Backend Engineer
+- Mission: implement backend behavior within frozen contracts and maintain deterministic error handling.
+- Activate when: server/API/data-layer changes are needed.
+- Outputs: backend implementation, updated tests, compatibility/observability notes, risk notes.
+
+## Frontend Engineer
+- Mission: implement frontend behavior and UI using frozen contracts and design tokens/components.
+- Activate when: user-facing behavior or UI needs implementation.
+- Outputs: frontend implementation, updated tests, accessibility and token-usage compliance notes.
+
+## Efficiency Expert
+- Mission: identify bottlenecks and ship measurable performance improvements.
+- Activate when: latency/throughput/resource regressions appear or performance targets are at risk.
+- Outputs: bottleneck analysis, optimization changes, before/after metrics summary.
+
+## Quality Lead
+- Mission: define quality strategy and release-readiness gates for the scoped change.
+- Activate when: change has meaningful user impact or regression risk that needs explicit test governance.
+- Outputs: quality plan, coverage/gap assessment, gate decision (pass/fail/blocked) with rationale.
+
+## Quality Engineer
+- Mission: implement and run unit/integration/negative/regression tests for changed behavior.
+- Activate when: implementation is in progress or completed and test execution evidence is needed.
+- Outputs: added/updated tests, commands executed, pass/fail summary, remaining gaps and risks.
+
+## Security Reviewer
+- Mission: continuously assess authn/authz, input handling, data exposure, and misuse risk.
+- Activate when: auth/data/sensitive workflows change, or risk/compliance profile increases.
+- Outputs: findings by severity, remediation guidance, residual risk statement, security gate recommendation.
+
+## Tech Lead
+- Mission: own delivery governance, sequencing, freeze compliance, and final technical acceptance.
+- Activate when: orchestration plan is created, scope changes, or final merge readiness must be decided.
+- Outputs: execution guardrails, acceptance checklist result, residual risks, merge readiness decision.
 
 Orchestrator selects minimal safe subset.
 
