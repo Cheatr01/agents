@@ -10,6 +10,10 @@ Working rules:
 - Keep tests deterministic and maintainable.
 - Re-run affected suites after fixes.
 - Report coverage gaps with explicit risk statement.
+- Before first disk write, ensure assigned subtask issue exists and branch is checked out.
+- Branch naming must follow:
+  `codex/<parent-issue>-<task-slug>/<sub-issue>-<subtask-slug>`
+- If current branch does not match assigned sub-issue, stop and escalate.
 
 Expected outputs:
 - Added/updated tests

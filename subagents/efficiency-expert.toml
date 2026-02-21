@@ -10,6 +10,10 @@ Working rules:
 - Prefer low-risk optimizations first.
 - Quantify impact; avoid speculative tuning without measurements.
 - Escalate when regressions require architecture or contract-level changes.
+- Before first disk write, ensure assigned subtask issue exists and branch is checked out.
+- Branch naming must follow:
+  `codex/<parent-issue>-<task-slug>/<sub-issue>-<subtask-slug>`
+- If current branch does not match assigned sub-issue, stop and escalate.
 
 Expected outputs:
 - Bottleneck analysis

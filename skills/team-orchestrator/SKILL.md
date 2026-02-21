@@ -74,6 +74,9 @@ Complexity (C):
 Risk (R):
 Exposure (E):
 Delivery Score:
+Parent Task:
+Parent Issue:
+Integration Branch:
 
 Selected Roles:
 - Role → justification
@@ -83,6 +86,8 @@ Skipped Roles:
 
 Parallel Tracks:
 Iteration Risk:
+Subtask Issue Map:
+- Subtask → issue id/url → owner role → branch
 
 Escalation Threshold:
 (score level that triggers expansion)
@@ -192,6 +197,8 @@ Orchestrator selects minimal safe subset.
 - No silent contract change
 - Least privilege
 - Freeze checkpoints are mandatory governance controls
+- No write before issue + branch binding
+- Every write must be traceable to one subtask issue
 
 ---
 
@@ -244,7 +251,8 @@ FE visual implementation allowed only AFTER design freeze.
 # 7️⃣ Orchestration Phases
 
 ## Phase 0 — Setup
-Create feature branch.
+Create integration branch:
+`codex/<parent-issue>-<task-slug>`
 Initialize scoring.
 Define escalation threshold.
 
@@ -252,6 +260,31 @@ Define escalation threshold.
 
 ## Phase 1 — Discovery (if required)
 PM clarifies scope.
+
+---
+
+## Phase 1.5 — Architecture Work Breakdown + GitHub Sync
+Architect decomposes the task into implementation-ready subtasks.
+
+Mandatory outputs:
+- Subtask list with:
+  - title
+  - owner role
+  - acceptance criteria
+  - dependencies
+  - risk notes
+- GitHub issue created for each subtask
+- Parent/child linkage (or explicit cross-links if hierarchy is unavailable)
+- Branch map:
+  - `codex/<parent-issue>-<task-slug>/<sub-issue>-<subtask-slug>`
+
+Hard gate:
+- No subagent may write to disk before it has:
+  - assigned subtask issue
+  - matching checked-out branch for that issue
+- Recommended execution support:
+  - Use `gh-subtask-breakdown` to generate and create subtask issues
+  - Use `issue-branch-guard` for pre-write checks per role
 
 ---
 
@@ -281,6 +314,9 @@ Replication allowed (multiple BE/FE tasks).
 
 Auto-escalation active during entire phase.
 
+Recommended parallel safety support:
+- Use `worktree-isolation` so each active subtask branch has an isolated worktree.
+
 ---
 
 ## Phase 4 — Quality + Security
@@ -302,7 +338,7 @@ If score increased → possible escalation loop.
 
 Merge all sub-branches into single:
 
-feature/<name>
+`codex/<parent-issue>-<task-slug>`
 
 CI must be green.
 Security must pass.
@@ -316,6 +352,9 @@ Security must pass.
 - FE visual only after design freeze
 - Security runs continuously
 - Any freeze violation → re-evaluate plan
+- Each writer role uses a dedicated subtask branch (recommended: dedicated worktree)
+- No writer role commits directly to integration branch
+- Branch name must include assigned sub-issue id
 
 ---
 
@@ -323,19 +362,16 @@ Security must pass.
 
 ## Branch Model
 
-feature/<name>
+Integration branch:
+`codex/<parent-issue>-<task-slug>`
 
-Sub-branches:
-pm
-arch
-security
-design-system-web
-design-system-app
-be-*
-fe-*
-perf
-qa
-techlead
+Subtask branches:
+`codex/<parent-issue>-<task-slug>/<sub-issue>-<subtask-slug>`
+
+Examples:
+- `codex/412-checkout-hardening/451-api-error-model`
+- `codex/412-checkout-hardening/452-fe-token-migration`
+- `codex/412-checkout-hardening/453-security-abuse-cases`
 
 ---
 
@@ -376,6 +412,8 @@ Breaking changes:
 - No direct merge without required approvals
 - Final state: single feature branch
 - CI green mandatory
+- Every merged branch must map to a linked subtask issue
+- Tech Lead verifies issue/branch traceability before merge approval
 
 ---
 
@@ -419,3 +457,6 @@ Work is done when:
 - Tech Lead approved
 - All work merged into single feature branch
 - No unresolved high risks
+- Architect-created subtasks exist as GitHub issues with clear ownership
+- Every write-capable role worked from the matching issue branch
+- Every merged change maps to exactly one subtask issue

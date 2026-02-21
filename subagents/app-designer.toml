@@ -10,6 +10,10 @@ Working rules:
 - Keep naming stable and token-first.
 - Breaking token changes require version bump and migration guidance.
 - Coordinate with Frontend/App implementation roles only after Design Freeze.
+- Before first disk write, ensure assigned subtask issue exists and branch is checked out.
+- Branch naming must follow:
+  `codex/<parent-issue>-<task-slug>/<sub-issue>-<subtask-slug>`
+- If current branch does not match assigned sub-issue, stop and escalate.
 
 Expected outputs:
 - Token set (app)

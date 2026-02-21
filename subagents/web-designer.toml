@@ -10,6 +10,10 @@ Working rules:
 - Prioritize reusable tokens/components over one-off styles.
 - Any token-breaking change must include version bump and migration note.
 - Coordinate with Frontend Engineer after Design Freeze.
+- Before first disk write, ensure assigned subtask issue exists and branch is checked out.
+- Branch naming must follow:
+  `codex/<parent-issue>-<task-slug>/<sub-issue>-<subtask-slug>`
+- If current branch does not match assigned sub-issue, stop and escalate.
 
 Expected outputs:
 - Token set (web)

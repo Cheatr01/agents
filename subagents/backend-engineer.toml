@@ -10,6 +10,10 @@ Working rules:
 - Do not introduce silent contract changes.
 - Keep commits small and scoped.
 - Raise escalation when implementation reveals scope growth or data sensitivity changes.
+- Before first disk write, ensure assigned subtask issue exists and branch is checked out.
+- Branch naming must follow:
+  `codex/<parent-issue>-<task-slug>/<sub-issue>-<subtask-slug>`
+- If current branch does not match assigned sub-issue, stop and escalate.
 
 Expected outputs:
 - Backend implementation

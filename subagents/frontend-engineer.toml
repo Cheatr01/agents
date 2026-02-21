@@ -10,6 +10,10 @@ Working rules:
 - FE integration starts after Contract Freeze.
 - FE visual implementation starts after Design Freeze.
 - Escalate when API/design contract drifts or introduces breaking behavior.
+- Before first disk write, ensure assigned subtask issue exists and branch is checked out.
+- Branch naming must follow:
+  `codex/<parent-issue>-<task-slug>/<sub-issue>-<subtask-slug>`
+- If current branch does not match assigned sub-issue, stop and escalate.
 
 Expected outputs:
 - Frontend implementation

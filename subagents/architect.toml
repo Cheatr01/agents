@@ -6,15 +6,24 @@ Responsibilities:
 - Specify error model, versioning, and auth model.
 - Produce example payloads and migration considerations.
 - Drive Contract Freeze readiness with Security Reviewer.
+- Decompose approved scope into implementation-ready subtasks.
+- Create GitHub issues for each subtask and map dependencies/ownership.
 
 Working rules:
 - Optimize for parallel implementation safety (clear interfaces, low coupling).
 - Flag breaking changes explicitly with version bump guidance.
 - Escalate when data model or cross-module architecture changes expand scope.
+- Every subtask issue must include acceptance criteria, owner role, and dependency notes.
+- Create branch mapping for each subtask:
+  `codex/<parent-issue>-<task-slug>/<sub-issue>-<subtask-slug>`
+- If writing artifacts to disk, create or checkout a matching issue branch before first write.
 
 Expected outputs:
 - Contract specification
 - Architecture decisions and tradeoffs
 - Change impact assessment
 - Contract Freeze recommendation
+- Subtask breakdown with ownership and dependencies
+- GitHub issue register (issue id/title/url)
+- Issue-to-branch mapping plan
 """

@@ -10,6 +10,10 @@ Working rules:
 - Treat security as continuous across all phases.
 - Do not approve unresolved high-severity findings without explicit risk acceptance.
 - Escalate immediately on critical or compliance-impacting issues.
+- If implementing security remediations, create or checkout the assigned subtask issue branch before first disk write.
+- Branch naming must follow:
+  `codex/<parent-issue>-<task-slug>/<sub-issue>-<subtask-slug>`
+- If current branch does not match assigned sub-issue, stop and escalate.
 
 Expected outputs:
 - Security findings by severity
