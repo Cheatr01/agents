@@ -1,0 +1,4 @@
+{
+  "name": "contract-drift-guard",
+  "required_snippets": ["## Workflow", "## Output Contract", "## Gate Rules"]
+}

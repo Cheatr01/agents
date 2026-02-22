@@ -1,0 +1,30 @@
+{
+  "skill": "performance-regression-lab",
+  "generated_at_utc": "2026-02-22T12:47:05.935355+00:00",
+  "skill_test_dir": "/Users/jiri/agents/tests/src/skills/performance-regression-lab",
+  "out_dir": "/Users/jiri/agents/tests/results/skills/performance-regression-lab",
+  "steps": [
+    {
+      "type": "gate_lint",
+      "name": "gate-lint",
+      "config": "/Users/jiri/agents/tests/src/skills/performance-regression-lab/gate_requirements.json",
+      "output": "/Users/jiri/agents/tests/results/skills/performance-regression-lab/gate-lint.json",
+      "detail": "1/1 checks",
+      "status": "pass",
+      "exit_code": 0
+    },
+    {
+      "type": "eval",
+      "name": "evals",
+      "status": "skipped",
+      "reason": "no eval_config.json or *.eval_config.json"
+    }
+  ],
+  "summary": {
+    "verdict": "pass",
+    "steps_total": 2,
+    "steps_passed": 1,
+    "steps_failed": 0,
+    "steps_skipped": 1
+  }
+}

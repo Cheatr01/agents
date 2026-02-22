@@ -1,0 +1,78 @@
+{
+  "skill": "scope-to-acceptance",
+  "generated_at_utc": "2026-02-22T12:47:06.112922+00:00",
+  "min_pass_rate": 0.875,
+  "summary": {
+    "total": 8,
+    "passed": 8,
+    "failed": 0,
+    "pass_rate": 1.0,
+    "verdict": "pass"
+  },
+  "results": [
+    {
+      "id": "s2a_explicit_01",
+      "category": "explicit_trigger",
+      "pass": true,
+      "found_response": true,
+      "missing_required_markers": [],
+      "forbidden_markers_present": []
+    },
+    {
+      "id": "s2a_implicit_01",
+      "category": "implicit_trigger",
+      "pass": true,
+      "found_response": true,
+      "missing_required_markers": [],
+      "forbidden_markers_present": []
+    },
+    {
+      "id": "s2a_contextual_01",
+      "category": "contextual_trigger",
+      "pass": true,
+      "found_response": true,
+      "missing_required_markers": [],
+      "forbidden_markers_present": []
+    },
+    {
+      "id": "s2a_boundary_01",
+      "category": "boundary_case",
+      "pass": true,
+      "found_response": true,
+      "missing_required_markers": [],
+      "forbidden_markers_present": []
+    },
+    {
+      "id": "s2a_regression_01",
+      "category": "regression_guard",
+      "pass": true,
+      "found_response": true,
+      "missing_required_markers": [],
+      "forbidden_markers_present": []
+    },
+    {
+      "id": "s2a_regression_02",
+      "category": "regression_guard",
+      "pass": true,
+      "found_response": true,
+      "missing_required_markers": [],
+      "forbidden_markers_present": []
+    },
+    {
+      "id": "s2a_negative_01",
+      "category": "negative_control",
+      "pass": true,
+      "found_response": true,
+      "missing_required_markers": [],
+      "forbidden_markers_present": []
+    },
+    {
+      "id": "s2a_negative_02",
+      "category": "negative_control",
+      "pass": true,
+      "found_response": true,
+      "missing_required_markers": [],
+      "forbidden_markers_present": []
+    }
+  ]
+}

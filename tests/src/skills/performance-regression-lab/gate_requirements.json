@@ -1,0 +1,4 @@
+{
+  "name": "performance-regression-lab",
+  "required_snippets": ["## Workflow", "## Output Contract", "## Gate Rules"]
+}

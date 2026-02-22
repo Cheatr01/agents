@@ -1,0 +1,18 @@
+{
+  "generated_at_utc": "2026-02-22T12:47:05.628519+00:00",
+  "summary": {
+    "total": 1,
+    "passed": 1,
+    "failed": 0,
+    "verdict": "pass"
+  },
+  "results": [
+    {
+      "skill": "contract-freeze-kit",
+      "config_path": "/Users/jiri/agents/tests/src/skills/contract-freeze-kit/gate_requirements.json",
+      "pass": true,
+      "missing_file": false,
+      "missing_snippets": []
+    }
+  ]
+}

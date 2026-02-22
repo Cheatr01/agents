@@ -1,0 +1,4 @@
+{
+  "name": "threat-model-baseline",
+  "required_snippets": ["## Workflow", "## Required Output", "## Gate Rules"]
+}

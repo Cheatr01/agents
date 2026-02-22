@@ -1,0 +1,4 @@
+{
+  "name": "contract-freeze-kit",
+  "required_snippets": ["## Freeze Checklist", "## Output Contract", "## Gate Rules"]
+}

@@ -1,0 +1,30 @@
+{
+  "skill": "contract-drift-guard",
+  "generated_at_utc": "2026-02-22T12:47:05.538985+00:00",
+  "skill_test_dir": "/Users/jiri/agents/tests/src/skills/contract-drift-guard",
+  "out_dir": "/Users/jiri/agents/tests/results/skills/contract-drift-guard",
+  "steps": [
+    {
+      "type": "gate_lint",
+      "name": "gate-lint",
+      "config": "/Users/jiri/agents/tests/src/skills/contract-drift-guard/gate_requirements.json",
+      "output": "/Users/jiri/agents/tests/results/skills/contract-drift-guard/gate-lint.json",
+      "detail": "1/1 checks",
+      "status": "pass",
+      "exit_code": 0
+    },
+    {
+      "type": "eval",
+      "name": "evals",
+      "status": "skipped",
+      "reason": "no eval_config.json or *.eval_config.json"
+    }
+  ],
+  "summary": {
+    "verdict": "pass",
+    "steps_total": 2,
+    "steps_passed": 1,
+    "steps_failed": 0,
+    "steps_skipped": 1
+  }
+}

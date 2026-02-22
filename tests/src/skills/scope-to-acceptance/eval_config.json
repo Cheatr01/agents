@@ -1,0 +1,7 @@
+{
+  "skill": "scope-to-acceptance",
+  "eval_name": "targeted",
+  "prompts_file": "tests/src/skills/scope-to-acceptance/scope-to-acceptance.targeted.jsonl",
+  "responses_file": "tests/src/skills/scope-to-acceptance/scope-to-acceptance.sample.jsonl",
+  "min_pass_rate": 0.875
+}

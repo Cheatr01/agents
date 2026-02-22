@@ -1,0 +1,27 @@
+{
+  "skill": "worktree-isolation",
+  "generated_at_utc": "2026-02-22T12:47:06.309410+00:00",
+  "skill_test_dir": "/Users/jiri/agents/tests/src/skills/worktree-isolation",
+  "out_dir": "/Users/jiri/agents/tests/results/skills/worktree-isolation",
+  "steps": [
+    {
+      "type": "gate_lint",
+      "name": "gate-lint",
+      "status": "skipped",
+      "reason": "missing gate_requirements.json"
+    },
+    {
+      "type": "eval",
+      "name": "evals",
+      "status": "skipped",
+      "reason": "no eval_config.json or *.eval_config.json"
+    }
+  ],
+  "summary": {
+    "verdict": "skipped",
+    "steps_total": 2,
+    "steps_passed": 0,
+    "steps_failed": 0,
+    "steps_skipped": 2
+  }
+}
