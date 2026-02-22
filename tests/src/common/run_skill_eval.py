@@ -164,16 +164,19 @@ def main() -> int:
     out_path = _resolve(args.out)
 
     config = _load_json(config_path)
-    prompts_path = _resolve(config["prompts_file"])
     responses_path_str = args.responses or config.get("responses_file")
     if not responses_path_str:
         parser.error("Responses file must be provided via --responses or config.responses_file")
     responses_path = _resolve(responses_path_str)
 
-    prompts = _load_jsonl(prompts_path)
     raw_responses = _load_jsonl(responses_path)
     responses = {str(r.get("id")): _extract_response_text(r) for r in raw_responses}
 
+    prompts_file = config.get("prompts_file")
+    if not prompts_file:
+        parser.error("eval config requires prompts_file")
+    prompts_path = _resolve(prompts_file)
+    prompts = _load_jsonl(prompts_path)
     report = grade_eval(config, prompts, responses)
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
