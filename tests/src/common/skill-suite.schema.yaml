@@ -5,12 +5,17 @@ description: "Single-file schema for skill gate checks and targeted eval cases."
 type: object
 additionalProperties: false
 required:
+  - eval_type
   - skill
   - skill_path
   - grader
   - rate
   - cases
 properties:
+  eval_type:
+    type: string
+    enum:
+      - skill
   skill:
     type: string
     minLength: 1
@@ -31,9 +36,17 @@ properties:
     type: number
     minimum: 0
     maximum: 1
+  max_concurrency:
+    type: integer
+    minimum: 1
   codex_timeout_seconds:
     type: integer
     minimum: 1
+  codex_isolation:
+    type: boolean
+  codex_home_base_dir:
+    type: string
+    minLength: 1
   codex_sandbox:
     type: string
     enum:

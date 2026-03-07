@@ -1,3 +1,4 @@
+eval_type: skill
 skill: design-freeze-kit
 skill_path: skills/design-freeze-kit/SKILL.md
 gate_requirements:

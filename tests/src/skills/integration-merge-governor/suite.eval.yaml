@@ -1,3 +1,4 @@
+eval_type: skill
 skill: integration-merge-governor
 skill_path: skills/integration-merge-governor/SKILL.md
 gate_requirements:

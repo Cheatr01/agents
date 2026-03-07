@@ -1,3 +1,4 @@
+eval_type: skill
 skill: worktree-isolation
 skill_path: skills/worktree-isolation/SKILL.md
 grader: markers

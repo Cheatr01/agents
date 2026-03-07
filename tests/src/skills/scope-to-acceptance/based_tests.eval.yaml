@@ -1,3 +1,4 @@
+eval_type: skill
 skill: scope-to-acceptance
 skill_path: skills/scope-to-acceptance/SKILL.md
 gate_requirements:

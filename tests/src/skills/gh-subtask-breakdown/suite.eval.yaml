@@ -1,3 +1,4 @@
+eval_type: skill
 skill: gh-subtask-breakdown
 skill_path: skills/gh-subtask-breakdown/SKILL.md
 grader: markers

@@ -1,3 +1,4 @@
+eval_type: skill
 skill: security-gate-runbook
 skill_path: skills/security-gate-runbook/SKILL.md
 gate_requirements:

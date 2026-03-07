@@ -1,3 +1,4 @@
+eval_type: skill
 skill: performance-regression-lab
 skill_path: skills/performance-regression-lab/SKILL.md
 gate_requirements:

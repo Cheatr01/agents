@@ -6,6 +6,7 @@ import json
 import os
 import subprocess
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import List
@@ -194,6 +195,7 @@ def main() -> int:
     )
     parser.add_argument("--out", required=True, help="Path to output report JSON")
     args = parser.parse_args()
+    started = time.monotonic()
 
     if bool(args.requirements) == bool(args.discover_dir):
         parser.error("Provide exactly one of --requirements or --discover-dir")
@@ -204,6 +206,9 @@ def main() -> int:
         requirement_items = _discover_requirements(_resolve(args.discover_dir))
 
     report = lint_items(requirement_items)
+    duration_ms = int((time.monotonic() - started) * 1000)
+    report["duration_ms"] = duration_ms
+    report["summary"]["duration_ms"] = duration_ms
 
     out_path = _resolve(args.out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -211,7 +216,7 @@ def main() -> int:
 
     s = report["summary"]
     label = "gate-lint"
-    details = f"{s['passed']}/{s['total']} checks"
+    details = f"{s['passed']}/{s['total']} checks  t={duration_ms}ms"
     print(f"{_icon(s['verdict'])} {label:<{LABEL_WIDTH}} {details}", flush=True)
     return 0 if s["verdict"] == "pass" else 1
 

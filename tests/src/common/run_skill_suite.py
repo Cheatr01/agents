@@ -6,6 +6,7 @@ import json
 import os
 import subprocess
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import List
@@ -60,8 +61,18 @@ def _resolve(path_str: str) -> Path:
     return (ROOT / p).resolve()
 
 
-def _run(cmd: list[str]) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(cmd, cwd=str(ROOT), text=True, capture_output=True)
+def _path_arg(path: Path) -> str:
+    try:
+        return str(path.relative_to(ROOT))
+    except ValueError:
+        return str(path)
+
+
+def _run(cmd: list[str]) -> tuple[subprocess.CompletedProcess[str], int]:
+    started = time.monotonic()
+    proc = subprocess.run(cmd, cwd=str(ROOT), text=True, capture_output=True)
+    duration_ms = int((time.monotonic() - started) * 1000)
+    return proc, duration_ms
 
 
 def _load_json(path: Path) -> dict:
@@ -152,7 +163,22 @@ def _find_embedded_gate_config(eval_configs: List[Path]) -> Path | None:
     return None
 
 
+def _runtime_detail(runner: dict) -> str:
+    isolation = "on" if runner.get("codex_isolation") else "off"
+    concurrency = int(runner.get("max_concurrency") or 1)
+    effective = int(runner.get("effective_concurrency") or concurrency)
+    retries = int(runner.get("serial_retry_count") or 0)
+    sandbox = str(runner.get("codex_sandbox") or "read-only")
+    model = str(runner.get("codex_model") or "default")
+    effort = str(runner.get("codex_reasoning_effort") or "default")
+    return (
+        f"isolation={isolation}  concurrency={concurrency}/{effective}  retries={retries}  "
+        f"sandbox={sandbox}  model={model}  effort={effort}"
+    )
+
+
 def run_skill_suite(skill_name: str, out_dir: Path) -> tuple[int, dict]:
+    started = time.monotonic()
     skill_dir = SKILLS_TESTS_DIR / skill_name
     summary = {
         "skill": skill_name,
@@ -170,6 +196,7 @@ def run_skill_suite(skill_name: str, out_dir: Path) -> tuple[int, dict]:
             "steps_passed": 0,
             "steps_failed": 1,
             "steps_skipped": 0,
+            "duration_ms": int((time.monotonic() - started) * 1000),
         }
         return 1, summary
 
@@ -188,11 +215,11 @@ def run_skill_suite(skill_name: str, out_dir: Path) -> tuple[int, dict]:
                 "python3",
                 "tests/src/common/run_skill_schema_lint.py",
                 "--config",
-                str(cfg_path.relative_to(ROOT)),
+                _path_arg(cfg_path),
                 "--out",
-                str(schema_out.relative_to(ROOT)),
+                _path_arg(schema_out),
             ]
-            proc = _run(cmd)
+            proc, duration_ms = _run(cmd)
             rc = proc.returncode
             schema_validity[cfg_path] = rc == 0
             schema_detail = ""
@@ -200,11 +227,14 @@ def run_skill_suite(skill_name: str, out_dir: Path) -> tuple[int, dict]:
                 try:
                     schema_report = _load_json(schema_out)
                     schema_summary = schema_report.get("summary", {})
-                    schema_detail = "schema ok" if rc == 0 else f"{schema_summary.get('failed', 0)} failure"
+                    schema_detail = (
+                        "schema ok" if rc == 0 else f"{schema_summary.get('failed', 0)} failure"
+                    )
                 except Exception:
                     schema_detail = "report parse error"
             else:
                 schema_detail = "missing report"
+            schema_detail = f"{schema_detail}  t={duration_ms}ms"
             summary["steps"].append(
                 {
                     "type": "schema_lint",
@@ -212,6 +242,7 @@ def run_skill_suite(skill_name: str, out_dir: Path) -> tuple[int, dict]:
                     "config": str(cfg_path),
                     "output": str(schema_out),
                     "detail": schema_detail,
+                    "duration_ms": duration_ms,
                     "status": "pass" if rc == 0 else "fail",
                     "exit_code": rc,
                 }
@@ -234,11 +265,11 @@ def run_skill_suite(skill_name: str, out_dir: Path) -> tuple[int, dict]:
             "python3",
             "tests/src/common/run_skill_gate_lint.py",
             "--requirements",
-            str(gate_cfg.relative_to(ROOT)),
+            _path_arg(gate_cfg),
             "--out",
-            str(gate_out.relative_to(ROOT)),
+            _path_arg(gate_out),
         ]
-        proc = _run(cmd)
+        proc, duration_ms = _run(cmd)
         rc = proc.returncode
         gate_detail = ""
         if gate_out.exists():
@@ -250,6 +281,7 @@ def run_skill_suite(skill_name: str, out_dir: Path) -> tuple[int, dict]:
                 gate_detail = "report parse error"
         else:
             gate_detail = "missing report"
+        gate_detail = f"{gate_detail}  t={duration_ms}ms"
         summary["steps"].append(
             {
                 "type": "gate_lint",
@@ -257,6 +289,7 @@ def run_skill_suite(skill_name: str, out_dir: Path) -> tuple[int, dict]:
                 "config": str(gate_cfg),
                 "output": str(gate_out),
                 "detail": gate_detail,
+                "duration_ms": duration_ms,
                 "status": "pass" if rc == 0 else "fail",
                 "exit_code": rc,
             }
@@ -298,14 +331,15 @@ def run_skill_suite(skill_name: str, out_dir: Path) -> tuple[int, dict]:
                 "python3",
                 "tests/src/common/run_skill_eval.py",
                 "--config",
-                str(cfg_path.relative_to(ROOT)),
+                _path_arg(cfg_path),
                 "--out",
-                str(out_path.relative_to(ROOT)),
+                _path_arg(out_path),
             ]
-            proc = _run(cmd)
+            proc, duration_ms = _run(cmd)
             rc = proc.returncode
             eval_detail = ""
             eval_status = "pass" if rc == 0 else "fail"
+            runtime_detail = ""
             if out_path.exists():
                 try:
                     eval_report = _load_json(out_path)
@@ -315,10 +349,12 @@ def run_skill_suite(skill_name: str, out_dir: Path) -> tuple[int, dict]:
                         f"{eval_summary.get('passed', 0)}/{eval_summary.get('total', 0)} pass  "
                         f"rate={float(eval_summary.get('pass_rate', 0.0)):.3f}"
                     )
+                    runtime_detail = _runtime_detail(eval_report.get("runner", {}))
                 except Exception:
                     eval_detail = "report parse error"
             else:
                 eval_detail = "missing report"
+            eval_detail = f"{eval_detail}  t={duration_ms}ms"
             summary["steps"].append(
                 {
                     "type": "eval",
@@ -326,11 +362,15 @@ def run_skill_suite(skill_name: str, out_dir: Path) -> tuple[int, dict]:
                     "config": str(cfg_path),
                     "output": str(out_path),
                     "detail": eval_detail,
+                    "runtime_detail": runtime_detail,
+                    "duration_ms": duration_ms,
                     "status": eval_status,
                     "exit_code": rc,
                 }
             )
             print(_fmt_step_line(eval_status, f"eval:{eval_name}", eval_detail), flush=True)
+            if runtime_detail:
+                print(_fmt_step_line("info", f"runtime:{eval_name}", runtime_detail), flush=True)
             if rc != 0:
                 _print_subprocess_failure(f"eval:{eval_name}", proc)
     else:
@@ -365,6 +405,7 @@ def run_skill_suite(skill_name: str, out_dir: Path) -> tuple[int, dict]:
         "steps_passed": steps_passed,
         "steps_failed": steps_failed,
         "steps_skipped": steps_skipped,
+        "duration_ms": int((time.monotonic() - started) * 1000),
     }
 
     return rc, summary
@@ -396,7 +437,10 @@ def main() -> int:
     summary_out.write_text(json.dumps(summary, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
     s = summary["summary"]
-    suite_detail = f"pass={s['steps_passed']}  fail={s['steps_failed']}  skipped={s['steps_skipped']}"
+    suite_detail = (
+        f"pass={s['steps_passed']}  fail={s['steps_failed']}  "
+        f"skipped={s['steps_skipped']}  t={s['duration_ms']}ms"
+    )
     print(_fmt_step_line(s["verdict"], "suite", suite_detail), flush=True)
     return rc
 

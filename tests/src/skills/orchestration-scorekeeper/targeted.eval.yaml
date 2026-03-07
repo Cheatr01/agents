@@ -1,3 +1,4 @@
+eval_type: skill
 skill: orchestration-scorekeeper
 skill_path: skills/orchestration-scorekeeper/SKILL.md
 gate_requirements:

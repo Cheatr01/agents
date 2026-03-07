@@ -1,3 +1,4 @@
+eval_type: skill
 skill: contract-freeze-kit
 skill_path: skills/contract-freeze-kit/SKILL.md
 gate_requirements:

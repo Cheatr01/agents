@@ -6,6 +6,7 @@ import json
 import os
 import subprocess
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import List, Optional
@@ -80,6 +81,7 @@ def main() -> int:
         help="Optional list (or comma-separated list) of skill names to test",
     )
     args = parser.parse_args()
+    started = time.monotonic()
 
     discovered = _discover_skills()
     if not discovered:
@@ -117,18 +119,19 @@ def main() -> int:
     for skill in skills_to_run:
         out_dir = RESULTS_DIR / "skills" / skill
         suite_summary_path = out_dir / "suite-summary.json"
-        rc = _run(
-            [
-                "python3",
-                "tests/src/common/run_skill_suite.py",
-                "--skill",
-                skill,
-                "--out-dir",
-                str(out_dir.relative_to(ROOT)),
-                "--summary-out",
-                str(suite_summary_path.relative_to(ROOT)),
-            ]
-        )
+        cmd = [
+            "python3",
+            "tests/src/common/run_skill_suite.py",
+            "--skill",
+            skill,
+            "--out-dir",
+            str(out_dir.relative_to(ROOT)),
+            "--summary-out",
+            str(suite_summary_path.relative_to(ROOT)),
+        ]
+        skill_started = time.monotonic()
+        rc = _run(cmd)
+        skill_duration_ms = int((time.monotonic() - skill_started) * 1000)
         if rc != 0:
             exit_code = 1
 
@@ -138,6 +141,7 @@ def main() -> int:
                 {
                     "skill": skill,
                     "verdict": suite_summary.get("summary", {}).get("verdict", "unknown"),
+                    "duration_ms": suite_summary.get("summary", {}).get("duration_ms", skill_duration_ms),
                     "summary_file": str(suite_summary_path),
                 }
             )
@@ -146,6 +150,7 @@ def main() -> int:
                 {
                     "skill": skill,
                     "verdict": "fail",
+                    "duration_ms": skill_duration_ms,
                     "summary_file": str(suite_summary_path),
                     "reason": "missing suite summary",
                 }
@@ -162,6 +167,7 @@ def main() -> int:
         "failed": failed,
         "skipped": skipped,
         "verdict": "pass" if failed == 0 else "fail",
+        "duration_ms": int((time.monotonic() - started) * 1000),
     }
 
     repo_summary_path = RESULTS_DIR / "repo-suite-summary.json"
@@ -170,7 +176,8 @@ def main() -> int:
     s = repo_summary["summary"]
     print(
         f"{_icon(s['verdict'])} {'repo-suite':<{REPO_LABEL_WIDTH}} "
-        f"total={s['total_skills']}  pass={s['passed']}  fail={s['failed']}  skipped={s['skipped']}"
+        f"total={s['total_skills']}  pass={s['passed']}  fail={s['failed']}  "
+        f"skipped={s['skipped']}  t={s['duration_ms']}ms"
     )
     return exit_code
 

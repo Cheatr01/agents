@@ -5,6 +5,7 @@ import argparse
 import json
 import os
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -44,6 +45,7 @@ def main() -> int:
     parser.add_argument("--config", required=True, help="Path to suite YAML config")
     parser.add_argument("--out", required=True, help="Path to output report JSON")
     args = parser.parse_args()
+    started = time.monotonic()
 
     config_path = _resolve(args.config)
     out_path = _resolve(args.out)
@@ -56,15 +58,18 @@ def main() -> int:
         config = None
 
     verdict = "pass" if not errors else "fail"
+    duration_ms = int((time.monotonic() - started) * 1000)
     report = {
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "config_path": str(config_path),
         "schema_path": str(schema_path()),
+        "duration_ms": duration_ms,
         "summary": {
             "total": 1,
             "passed": 1 if verdict == "pass" else 0,
             "failed": 0 if verdict == "pass" else 1,
             "verdict": verdict,
+            "duration_ms": duration_ms,
         },
         "results": [
             {
@@ -80,6 +85,7 @@ def main() -> int:
     out_path.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
     details = "schema ok" if verdict == "pass" else f"{len(errors)} error(s)"
+    details = f"{details}  t={duration_ms}ms"
     print(f"{_icon(verdict)} {'schema-lint':<{LABEL_WIDTH}} {details}", flush=True)
     return 0 if verdict == "pass" else 1
 

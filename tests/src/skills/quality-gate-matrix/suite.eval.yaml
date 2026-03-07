@@ -1,3 +1,4 @@
+eval_type: skill
 skill: quality-gate-matrix
 skill_path: skills/quality-gate-matrix/SKILL.md
 gate_requirements:

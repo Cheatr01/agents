@@ -1,3 +1,4 @@
+eval_type: skill
 skill: hello-world
 skill_path: skills/hello-world/SKILL.md
 grader: markers

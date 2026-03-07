@@ -1,3 +1,4 @@
+eval_type: skill
 skill: team-orchestrator
 skill_path: skills/team-orchestrator/SKILL.md
 grader: markers

@@ -13,6 +13,7 @@ Reference:
   - preferred format: single-file YAML suite (`*.eval.yaml` / `*.eval.yml`)
   - every suite YAML is validated against [skill-suite.schema.yaml](/Users/jiri/agents/tests/src/common/skill-suite.schema.yaml)
 - `results/` generated test outputs
+- `../eval-config.toml` global eval runtime defaults; suite YAML can override any runtime field
 
 ## Quick Start
 
@@ -43,13 +44,19 @@ python3 tests/src/common/run_skill_suite.py \
   - schema lint (`schema:<eval>`) for every suite YAML before any eval execution
   - gate lint from embedded `gate_requirements` in the suite YAML, or legacy `gate_requirements.json`
   - one or more evals (`eval_config.json`, `*.eval_config.json`, `eval.yaml`, `*.eval.yaml`) if present
+- CLI output prints aligned per-step status, runtime, and effective eval runtime config for each eval.
 - Outputs are isolated per skill under `tests/results/skills/<skill>/`.
 - Repo summary is written to `tests/results/repo-suite-summary.json`.
 - The targeted prompt set validates response contracts and negative controls.
-- The preferred suite YAML contains `suite_class`, `skill`, `skill_path`, optional `gate_requirements`, required `grader`, required `rate`, and required `cases`.
+- The preferred suite YAML contains required `eval_type`, `skill`, `skill_path`, optional `gate_requirements`, required `grader`, required `rate`, and required `cases`.
 - The gate lint validates `gate_requirements.required_snippets` against the file in `skill_path`.
 - Eval runner executes each case live via `codex exec` and then grades marker expectations on the captured response.
 - For YAML eval suites, keep each case self-contained (`prompt` + `expected`) with no pre-generated response fixtures.
 - `eval_name` is optional for YAML suites; if omitted, it is derived from the config file name.
 - `cases` is required by schema and may be an empty array.
-- Optional per-eval runtime knobs: `codex_timeout_seconds`, `codex_sandbox`, `codex_model`, `codex_reasoning_effort`, `codex_extra_args`.
+- Optional per-eval runtime knobs: `max_concurrency`, `codex_timeout_seconds`, `codex_sandbox`, `codex_model`, `codex_reasoning_effort`, `codex_extra_args`, `codex_isolation`, `codex_home_base_dir`.
+- Runtime precedence is `env > suite YAML > /Users/jiri/agents/eval-config.toml > built-in defaults`.
+- `EVAL_CODEX_HOME_BASE_DIR` overrides the configured base directory for isolated `CODEX_HOME` temp homes.
+- For `eval_type: skill` with `codex_isolation: true`, the runner creates a fresh suite-local `CODEX_HOME`, copies minimal auth/state files, and symlinks the tested skill into that isolated home.
+- Default `max_concurrency` is `3`, configurable globally in `/Users/jiri/agents/eval-config.toml` and overridable per suite YAML.
+- Duration metadata is written into schema, gate, eval, suite, and repo-level result JSON files.

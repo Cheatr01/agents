@@ -9,14 +9,17 @@ ROOT = Path(__file__).resolve().parents[3]
 SCHEMA_PATH = ROOT / "tests" / "src" / "common" / "skill-suite.schema.yaml"
 
 _TOP_LEVEL_KEYS = {
-    "suite_class",
+    "eval_type",
     "skill",
     "skill_path",
     "gate_requirements",
     "eval_name",
     "grader",
     "rate",
+    "max_concurrency",
     "codex_timeout_seconds",
+    "codex_isolation",
+    "codex_home_base_dir",
     "codex_sandbox",
     "codex_model",
     "codex_reasoning_effort",
@@ -26,6 +29,7 @@ _TOP_LEVEL_KEYS = {
 _CASE_KEYS = {"id", "prompt", "expected"}
 _EXPECTED_KEYS = {"must_include", "must_not_include"}
 _GATE_KEYS = {"required_snippets"}
+_EVAL_TYPE_VALUES = {"skill"}
 _SANDBOX_VALUES = {"read-only", "workspace-write", "danger-full-access"}
 _REASONING_VALUES = {"none", "low", "medium", "high", "xhigh"}
 
@@ -169,12 +173,14 @@ def _manual_validate(data: Any) -> list[str]:
     for key in unknown:
         errors.append(f"{_json_path([key])} is not allowed")
 
-    for key in ("skill", "skill_path", "grader", "rate", "cases"):
+    for key in ("eval_type", "skill", "skill_path", "grader", "rate", "cases"):
         if key not in data:
             errors.append(f"$ missing required property '{key}'")
 
-    if "suite_class" in data:
-        _validate_string(data["suite_class"], ["suite_class"], errors)
+    if "eval_type" in data:
+        _validate_string(data["eval_type"], ["eval_type"], errors)
+        if isinstance(data["eval_type"], str) and data["eval_type"] not in _EVAL_TYPE_VALUES:
+            errors.append("$.eval_type must be one of ['skill']")
     if "skill" in data:
         _validate_string(data["skill"], ["skill"], errors)
     if "skill_path" in data:
@@ -194,11 +200,20 @@ def _manual_validate(data: Any) -> list[str]:
             errors.append("$.rate must be a number")
         elif not (0 <= float(data["rate"]) <= 1):
             errors.append("$.rate must be between 0 and 1")
+    if "max_concurrency" in data:
+        if not _is_int(data["max_concurrency"]):
+            errors.append("$.max_concurrency must be an integer")
+        elif int(data["max_concurrency"]) < 1:
+            errors.append("$.max_concurrency must be >= 1")
     if "codex_timeout_seconds" in data:
         if not _is_int(data["codex_timeout_seconds"]):
             errors.append("$.codex_timeout_seconds must be an integer")
         elif int(data["codex_timeout_seconds"]) < 1:
             errors.append("$.codex_timeout_seconds must be >= 1")
+    if "codex_isolation" in data and not isinstance(data["codex_isolation"], bool):
+        errors.append("$.codex_isolation must be a boolean")
+    if "codex_home_base_dir" in data:
+        _validate_string(data["codex_home_base_dir"], ["codex_home_base_dir"], errors)
     if "codex_sandbox" in data:
         _validate_string(data["codex_sandbox"], ["codex_sandbox"], errors)
         if isinstance(data["codex_sandbox"], str) and data["codex_sandbox"] not in _SANDBOX_VALUES:
