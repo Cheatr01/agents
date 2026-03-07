@@ -1,0 +1,10 @@
+skill: integration-merge-governor
+skill_path: skills/integration-merge-governor/SKILL.md
+gate_requirements:
+  required_snippets:
+    - "## Merge Ordering Strategy"
+    - "## Output Contract"
+    - "## Gate Rules"
+grader: markers
+rate: 0.875
+cases: []

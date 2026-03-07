@@ -1,0 +1,5 @@
+skill: worktree-isolation
+skill_path: skills/worktree-isolation/SKILL.md
+grader: markers
+rate: 0.875
+cases: []

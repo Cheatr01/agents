@@ -12,7 +12,7 @@ This repository stores reusable assets for local agent workflows.
 - Keep automated eval assets under `tests/`:
   - `tests/test_fixtures/` for shared fixtures only
   - `tests/src/` for test code, mirroring root skill layout (`tests/src/skills/<skill-name>/`)
-  - keep skill-specific prompts, sample responses, and gate requirements inside each skill test folder
+  - prefer a single skill-suite YAML per tested skill (`*.eval.yaml`) that contains `skill_path`, optional `gate_requirements`, required `grader`, required `rate`, and eval cases together
   - prefer runners that discover `tests/src/skills/*` and execute isolated per-skill test flows
   - `tests/results/` for generated test outputs
 

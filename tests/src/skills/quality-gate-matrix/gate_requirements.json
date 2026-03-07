@@ -1,4 +1,0 @@
-{
-  "name": "quality-gate-matrix",
-  "required_snippets": ["## Workflow", "## Output Contract", "## Gate Rules"]
-}

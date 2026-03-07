@@ -1,0 +1,5 @@
+skill: issue-branch-guard
+skill_path: skills/issue-branch-guard/SKILL.md
+grader: markers
+rate: 0.875
+cases: []

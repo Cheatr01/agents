@@ -1,0 +1,10 @@
+skill: design-freeze-kit
+skill_path: skills/design-freeze-kit/SKILL.md
+gate_requirements:
+  required_snippets:
+    - "## Required Deliverables"
+    - "## Output Contract"
+    - "## Gate Rules"
+grader: markers
+rate: 0.875
+cases: []

@@ -1,0 +1,10 @@
+skill: performance-regression-lab
+skill_path: skills/performance-regression-lab/SKILL.md
+gate_requirements:
+  required_snippets:
+    - "## Workflow"
+    - "## Output Contract"
+    - "## Gate Rules"
+grader: markers
+rate: 0.875
+cases: []

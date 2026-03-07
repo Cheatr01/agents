@@ -1,7 +1,0 @@
-{
-  "skill": "orchestration-scorekeeper",
-  "eval_name": "targeted",
-  "prompts_file": "tests/src/skills/orchestration-scorekeeper/orchestration-scorekeeper.targeted.jsonl",
-  "responses_file": "tests/src/skills/orchestration-scorekeeper/orchestration-scorekeeper.sample.jsonl",
-  "min_pass_rate": 0.875
-}

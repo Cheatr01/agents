@@ -1,0 +1,92 @@
+skill: orchestration-scorekeeper
+skill_path: skills/orchestration-scorekeeper/SKILL.md
+gate_requirements:
+  required_snippets:
+    - "## Required Execution"
+    - "## Output Contract"
+    - "## Gate Rules"
+grader: markers
+rate: 0.875
+cases:
+  - id: osk_explicit_01
+    prompt: "Pouzij $orchestration-scorekeeper. Zascoreuj task: API + FE checkout zmena pro verejne uzivatele s citlivymi daty."
+    expected:
+      must_include:
+        - "Task:"
+        - "C:"
+        - "R:"
+        - "E:"
+        - "Delivery Score:"
+        - "Tier:"
+        - "Escalation Triggered:"
+        - "Reason Codes:"
+        - "Score Log Entry:"
+      must_not_include: []
+
+  - id: osk_implicit_01
+    prompt: Zacina nova orchestrace, potrebuju jednotny score card a threshold kontrolu pred implementaci.
+    expected:
+      must_include:
+        - "C:"
+        - "R:"
+        - "E:"
+        - "Delivery Score:"
+        - "Escalation Threshold:"
+        - "Escalation Triggered:"
+      must_not_include: []
+
+  - id: osk_escalation_01
+    prompt: Bhem implementace pribyla auth zmena a nova data citlivost. Prepocitej score a navrhni eskalaci.
+    expected:
+      must_include:
+        - "Escalation Triggered: yes"
+        - "Reason Codes:"
+        - "Required Role Changes:"
+        - "Gates to Re-run:"
+      must_not_include: []
+
+  - id: osk_revalidation_01
+    prompt: Pred final gate potrebuju score revalidation s duvody a log entry.
+    expected:
+      must_include:
+        - "Delivery Score:"
+        - "Tier:"
+        - "Score Log Entry:"
+      must_not_include: []
+
+  - id: osk_regression_01
+    prompt: Vystup musi obsahovat evidenci pro C,R,E, ne jen cisla.
+    expected:
+      must_include:
+        - "C:"
+        - "R:"
+        - "E:"
+        - "<evidence>"
+      must_not_include: []
+
+  - id: osk_regression_02
+    prompt: Pokud se meni tier, vrat i role changes a gates to rerun.
+    expected:
+      must_include:
+        - "Required Role Changes:"
+        - "Gates to Re-run:"
+      must_not_include: []
+
+  - id: osk_negative_01
+    prompt: "Preloz do anglictiny vetu: Ahoj svete."
+    expected:
+      must_include: []
+      must_not_include:
+        - "Delivery Score:"
+        - "Escalation Triggered:"
+        - "Score Log Entry:"
+
+  - id: osk_negative_02
+    prompt: Napis kratky vtip o databazich.
+    expected:
+      must_include: []
+      must_not_include:
+        - "C:"
+        - "R:"
+        - "E:"
+        - "Delivery Score:"

@@ -1,0 +1,10 @@
+skill: security-gate-runbook
+skill_path: skills/security-gate-runbook/SKILL.md
+gate_requirements:
+  required_snippets:
+    - "## Workflow"
+    - "## Output Contract"
+    - "## Gate Rules"
+grader: markers
+rate: 0.875
+cases: []

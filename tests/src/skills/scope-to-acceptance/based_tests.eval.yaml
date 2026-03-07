@@ -1,0 +1,87 @@
+skill: scope-to-acceptance
+skill_path: skills/scope-to-acceptance/SKILL.md
+gate_requirements:
+  required_snippets:
+    - "## Workflow"
+    - "## Output Contract"
+    - "## Gate Rules"
+grader: markers
+rate: 0.875
+cases:
+  - id: s2a_explicit_01
+    prompt: Pouzij $scope-to-acceptance a priprav PM vystup pro nejasny pozadavek na zrychleni onboardingu.
+    expected:
+      must_include:
+        - "Outcome Statement:"
+        - "Scope (in):"
+        - "Non-goals (out):"
+        - "Acceptance Criteria:"
+        - "Dependencies:"
+        - "Ready for Subtask Breakdown:"
+      must_not_include: []
+
+  - id: s2a_implicit_01
+    prompt: Mame mlhavou zadost od businessu na lepsi checkout. Potrebuju to pripravit pred rozdelenim na subtasky.
+    expected:
+      must_include:
+        - "Scope (in):"
+        - "Non-goals (out):"
+        - "Acceptance Criteria:"
+        - "Assumptions:"
+        - "Open Questions:"
+      must_not_include: []
+
+  - id: s2a_contextual_01
+    prompt: Uz vime ze zavisime na externi platebni API, ale neni jasny owner ani riziko. Priprav vystup PM faze 1.
+    expected:
+      must_include:
+        - "Dependencies:"
+        - "Blockers:"
+        - "Ready for Subtask Breakdown:"
+      must_not_include: []
+
+  - id: s2a_boundary_01
+    prompt: Scope je casto preleza do redesignu cele aplikace. Potrebuju jasne vymezit co je out-of-scope.
+    expected:
+      must_include:
+        - "Scope (in):"
+        - "Non-goals (out):"
+      must_not_include: []
+
+  - id: s2a_regression_01
+    prompt: Vrat PM vystup tak, aby byl testovatelny a mel aspon 3 acceptance criteria.
+    expected:
+      must_include:
+        - "Acceptance Criteria:"
+        - "AC1:"
+        - "AC2:"
+        - "AC3:"
+      must_not_include: []
+
+  - id: s2a_regression_02
+    prompt: Sepsat PM vystup vcetne predpokladu a otevrenych otazek, jinak to nejde predat architektovi.
+    expected:
+      must_include:
+        - "Assumptions:"
+        - "Open Questions:"
+        - "Ready for Subtask Breakdown:"
+      must_not_include: []
+
+  - id: s2a_negative_01
+    prompt: Jen oprav preklep v README a nic vic.
+    expected:
+      must_include: []
+      must_not_include:
+        - "Scope (in):"
+        - "Non-goals (out):"
+        - "Acceptance Criteria:"
+        - "Dependencies:"
+
+  - id: s2a_negative_02
+    prompt: Kolik je 2+2? Odpovez jednim cislem.
+    expected:
+      must_include: []
+      must_not_include:
+        - "Outcome Statement:"
+        - "Scope (in):"
+        - "Acceptance Criteria:"

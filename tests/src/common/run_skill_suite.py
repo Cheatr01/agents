@@ -68,25 +68,88 @@ def _load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _load_yaml(path: Path) -> dict:
+    try:
+        import yaml  # type: ignore
+
+        data = yaml.safe_load(path.read_text(encoding="utf-8"))
+    except ModuleNotFoundError:
+        proc = subprocess.run(
+            [
+                "ruby",
+                "-rjson",
+                "-ryaml",
+                "-e",
+                "data = YAML.safe_load(File.read(ARGV[0]), aliases: true); puts JSON.generate(data)",
+                str(path),
+            ],
+            text=True,
+            capture_output=True,
+        )
+        if proc.returncode != 0:
+            raise ValueError(f"Unable to parse YAML config {path}: {proc.stderr.strip()}") from None
+        data = json.loads(proc.stdout)
+
+    if not isinstance(data, dict):
+        raise ValueError(f"YAML config must be a mapping/object: {path}")
+    return data
+
+
+def _load_config(path: Path) -> dict:
+    if path.suffix.lower() in {".yaml", ".yml"}:
+        return _load_yaml(path)
+    return _load_json(path)
+
+
 def _discover_eval_configs(skill_dir: Path) -> List[Path]:
     candidates: List[Path] = []
-    default_cfg = skill_dir / "eval_config.json"
-    if default_cfg.exists():
-        candidates.append(default_cfg)
+    for default_name in ("eval_config.json", "eval.yaml", "eval.yml"):
+        default_cfg = skill_dir / default_name
+        if default_cfg.exists():
+            candidates.append(default_cfg)
 
-    for path in sorted(skill_dir.glob("*.eval_config.json")):
-        if path not in candidates:
-            candidates.append(path)
+    for pattern in ("*.eval_config.json", "*.eval.yaml", "*.eval.yml"):
+        for path in sorted(skill_dir.glob(pattern)):
+            if path not in candidates:
+                candidates.append(path)
 
     return candidates
+
+
+def _strip_eval_suffix(file_name: str) -> str:
+    for suffix in (".eval_config.json", ".eval.yaml", ".eval.yml"):
+        if file_name.endswith(suffix):
+            return file_name[: -len(suffix)]
+    return file_name
+
+
+def _is_default_eval_config(file_name: str) -> bool:
+    return file_name in {"eval_config.json", "eval.yaml", "eval.yml"}
 
 
 def _eval_output_name(config_path: Path, config: dict) -> str:
     if isinstance(config.get("eval_name"), str) and config["eval_name"].strip():
         return config["eval_name"].strip()
-    if config_path.name == "eval_config.json":
+    if _is_default_eval_config(config_path.name):
         return "eval"
-    return config_path.name.replace(".eval_config.json", "")
+    return _strip_eval_suffix(config_path.name)
+
+
+def _fallback_eval_output_name(config_path: Path) -> str:
+    if _is_default_eval_config(config_path.name):
+        return "eval"
+    return _strip_eval_suffix(config_path.name)
+
+
+def _find_embedded_gate_config(eval_configs: List[Path]) -> Path | None:
+    for cfg_path in eval_configs:
+        try:
+            cfg = _load_config(cfg_path)
+        except Exception:
+            continue
+        if isinstance(cfg.get("gate_requirements"), dict):
+            return cfg_path
+    return None
 
 
 def run_skill_suite(skill_name: str, out_dir: Path) -> tuple[int, dict]:
@@ -113,9 +176,59 @@ def run_skill_suite(skill_name: str, out_dir: Path) -> tuple[int, dict]:
     out_dir.mkdir(parents=True, exist_ok=True)
     print(f"{_icon('info')} skill {skill_name}", flush=True)
 
+    eval_configs = _discover_eval_configs(skill_dir)
+    schema_validity: dict[Path, bool] = {}
+
+    # Step 0: schema lint (for suite YAML configs)
+    if eval_configs:
+        for cfg_path in eval_configs:
+            schema_name = _fallback_eval_output_name(cfg_path)
+            schema_out = out_dir / f"{schema_name}.schema.json"
+            cmd = [
+                "python3",
+                "tests/src/common/run_skill_schema_lint.py",
+                "--config",
+                str(cfg_path.relative_to(ROOT)),
+                "--out",
+                str(schema_out.relative_to(ROOT)),
+            ]
+            proc = _run(cmd)
+            rc = proc.returncode
+            schema_validity[cfg_path] = rc == 0
+            schema_detail = ""
+            if schema_out.exists():
+                try:
+                    schema_report = _load_json(schema_out)
+                    schema_summary = schema_report.get("summary", {})
+                    schema_detail = "schema ok" if rc == 0 else f"{schema_summary.get('failed', 0)} failure"
+                except Exception:
+                    schema_detail = "report parse error"
+            else:
+                schema_detail = "missing report"
+            summary["steps"].append(
+                {
+                    "type": "schema_lint",
+                    "name": f"schema:{schema_name}",
+                    "config": str(cfg_path),
+                    "output": str(schema_out),
+                    "detail": schema_detail,
+                    "status": "pass" if rc == 0 else "fail",
+                    "exit_code": rc,
+                }
+            )
+            print(_fmt_step_line("pass" if rc == 0 else "fail", f"schema:{schema_name}", schema_detail), flush=True)
+            if rc != 0:
+                _print_subprocess_failure(f"schema:{schema_name}", proc)
+
     # Step 1: gate lint (if per-skill gate config exists)
-    gate_cfg = skill_dir / "gate_requirements.json"
-    if gate_cfg.exists():
+    embedded_gate_cfg = _find_embedded_gate_config(eval_configs)
+    legacy_gate_cfg = skill_dir / "gate_requirements.json"
+    gate_cfg = None
+    if embedded_gate_cfg is not None and schema_validity.get(embedded_gate_cfg, False):
+        gate_cfg = embedded_gate_cfg
+    elif legacy_gate_cfg.exists():
+        gate_cfg = legacy_gate_cfg
+    if gate_cfg is not None:
         gate_out = out_dir / "gate-lint.json"
         cmd = [
             "python3",
@@ -157,16 +270,28 @@ def run_skill_suite(skill_name: str, out_dir: Path) -> tuple[int, dict]:
                 "type": "gate_lint",
                 "name": "gate-lint",
                 "status": "skipped",
-                "reason": "missing gate_requirements.json",
+                "reason": "missing valid embedded or legacy gate requirements",
             }
         )
-        print(_fmt_step_line("skipped", "gate-lint", "no gate_requirements.json"), flush=True)
+        print(_fmt_step_line("skipped", "gate-lint", "no valid embedded/legacy gate config"), flush=True)
 
     # Step 2+: evals (0..n configs)
-    eval_configs = _discover_eval_configs(skill_dir)
     if eval_configs:
         for cfg_path in eval_configs:
-            cfg = _load_json(cfg_path)
+            eval_name = _fallback_eval_output_name(cfg_path)
+            if not schema_validity.get(cfg_path, False):
+                summary["steps"].append(
+                    {
+                        "type": "eval",
+                        "name": eval_name,
+                        "config": str(cfg_path),
+                        "status": "skipped",
+                        "reason": "schema validation failed",
+                    }
+                )
+                print(_fmt_step_line("skipped", f"eval:{eval_name}", "schema validation failed"), flush=True)
+                continue
+            cfg = _load_config(cfg_path)
             eval_name = _eval_output_name(cfg_path, cfg)
             out_path = out_dir / f"{eval_name}.eval.json"
             cmd = [
@@ -180,10 +305,12 @@ def run_skill_suite(skill_name: str, out_dir: Path) -> tuple[int, dict]:
             proc = _run(cmd)
             rc = proc.returncode
             eval_detail = ""
+            eval_status = "pass" if rc == 0 else "fail"
             if out_path.exists():
                 try:
                     eval_report = _load_json(out_path)
                     eval_summary = eval_report.get("summary", {})
+                    eval_status = str(eval_summary.get("verdict", eval_status))
                     eval_detail = (
                         f"{eval_summary.get('passed', 0)}/{eval_summary.get('total', 0)} pass  "
                         f"rate={float(eval_summary.get('pass_rate', 0.0)):.3f}"
@@ -199,11 +326,11 @@ def run_skill_suite(skill_name: str, out_dir: Path) -> tuple[int, dict]:
                     "config": str(cfg_path),
                     "output": str(out_path),
                     "detail": eval_detail,
-                    "status": "pass" if rc == 0 else "fail",
+                    "status": eval_status,
                     "exit_code": rc,
                 }
             )
-            print(_fmt_step_line("pass" if rc == 0 else "fail", f"eval:{eval_name}", eval_detail), flush=True)
+            print(_fmt_step_line(eval_status, f"eval:{eval_name}", eval_detail), flush=True)
             if rc != 0:
                 _print_subprocess_failure(f"eval:{eval_name}", proc)
     else:
@@ -212,7 +339,7 @@ def run_skill_suite(skill_name: str, out_dir: Path) -> tuple[int, dict]:
                 "type": "eval",
                 "name": "evals",
                 "status": "skipped",
-                "reason": "no eval_config.json or *.eval_config.json",
+                "reason": "no eval config (json/yaml)",
             }
         )
         print(_fmt_step_line("skipped", "evals", "no eval config"), flush=True)

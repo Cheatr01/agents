@@ -1,4 +1,0 @@
-{
-  "name": "integration-merge-governor",
-  "required_snippets": ["## Merge Ordering Strategy", "## Output Contract", "## Gate Rules"]
-}

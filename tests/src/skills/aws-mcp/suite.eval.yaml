@@ -1,0 +1,5 @@
+skill: aws-mcp
+skill_path: skills/aws-mcp/SKILL.md
+grader: markers
+rate: 0.875
+cases: []

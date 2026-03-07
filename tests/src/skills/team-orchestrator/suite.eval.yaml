@@ -1,0 +1,5 @@
+skill: team-orchestrator
+skill_path: skills/team-orchestrator/SKILL.md
+grader: markers
+rate: 0.875
+cases: []

@@ -1,0 +1,10 @@
+skill: contract-freeze-kit
+skill_path: skills/contract-freeze-kit/SKILL.md
+gate_requirements:
+  required_snippets:
+    - "## Freeze Checklist"
+    - "## Output Contract"
+    - "## Gate Rules"
+grader: markers
+rate: 0.875
+cases: []

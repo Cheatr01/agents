@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -42,8 +43,73 @@ def _load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _load_yaml(path: Path) -> dict:
+    try:
+        import yaml  # type: ignore
+
+        data = yaml.safe_load(path.read_text(encoding="utf-8"))
+    except ModuleNotFoundError:
+        proc = subprocess.run(
+            [
+                "ruby",
+                "-rjson",
+                "-ryaml",
+                "-e",
+                "data = YAML.safe_load(File.read(ARGV[0]), aliases: true); puts JSON.generate(data)",
+                str(path),
+            ],
+            text=True,
+            capture_output=True,
+        )
+        if proc.returncode != 0:
+            raise ValueError(f"Unable to parse YAML config {path}: {proc.stderr.strip()}") from None
+        data = json.loads(proc.stdout)
+
+    if not isinstance(data, dict):
+        raise ValueError(f"YAML config must be a mapping/object: {path}")
+    return data
+
+
+def _load_config(path: Path) -> dict:
+    if path.suffix.lower() in {".yaml", ".yml"}:
+        return _load_yaml(path)
+    return _load_json(path)
+
+
+def _normalize_required_snippets(raw: object, path: Path) -> list[str]:
+    if raw is None:
+        return []
+    if not isinstance(raw, list) or any(not isinstance(item, str) for item in raw):
+        raise ValueError(f"Invalid required_snippets list in {path}")
+    return list(raw)
+
+
+def _load_requirements_from_suite(path: Path, data: dict) -> list[dict]:
+    gate = data.get("gate_requirements")
+    if not isinstance(gate, dict):
+        raise ValueError(f"Missing or invalid gate_requirements in {path}")
+
+    name = str(data.get("skill") or "").strip()
+    if not name:
+        raise ValueError(f"Missing skill in {path}")
+
+    skill_path = str(data.get("skill_path") or "").strip()
+    if not skill_path:
+        raise ValueError(f"Missing skill_path in {path}")
+
+    item = {
+        "name": name,
+        "skill_path": skill_path,
+        "required_snippets": _normalize_required_snippets(gate.get("required_snippets"), path),
+        "_config_path": str(path),
+    }
+    return [item]
+
+
 def _load_requirements_from_file(path: Path) -> list[dict]:
-    data = _load_json(path)
+    data = _load_config(path)
+    if isinstance(data, dict) and "gate_requirements" in data:
+        return _load_requirements_from_suite(path, data)
     if isinstance(data, dict) and "skills" in data:
         skills = data.get("skills", [])
         if not isinstance(skills, list):
@@ -70,13 +136,15 @@ def lint_items(requirement_items: list[dict]) -> dict:
     for item in requirement_items:
         name = item["name"]
         required_snippets = list(item.get("required_snippets", []))
-        skill_file = ROOT / "skills" / name / "SKILL.md"
+        skill_path = str(item.get("skill_path") or "").strip()
+        skill_file = _resolve(skill_path) if skill_path else (ROOT / "skills" / name / "SKILL.md")
         config_path = item.get("_config_path")
 
         if not skill_file.exists():
             rows.append(
                 {
                     "skill": name,
+                    "skill_path": str(skill_file),
                     "config_path": config_path,
                     "pass": False,
                     "missing_file": True,
@@ -94,6 +162,7 @@ def lint_items(requirement_items: list[dict]) -> dict:
         rows.append(
             {
                 "skill": name,
+                "skill_path": str(skill_file),
                 "config_path": config_path,
                 "pass": ok,
                 "missing_file": False,
@@ -121,7 +190,7 @@ def main() -> int:
     parser.add_argument("--requirements", help="Path to requirements JSON (single file or legacy aggregate)")
     parser.add_argument(
         "--discover-dir",
-        help="Directory to recursively discover per-skill gate_requirements.json files",
+        help="Directory to recursively discover legacy per-skill gate_requirements.json files",
     )
     parser.add_argument("--out", required=True, help="Path to output report JSON")
     args = parser.parse_args()

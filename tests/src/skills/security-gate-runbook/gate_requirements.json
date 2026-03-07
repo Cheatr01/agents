@@ -1,4 +1,0 @@
-{
-  "name": "security-gate-runbook",
-  "required_snippets": ["## Workflow", "## Output Contract", "## Gate Rules"]
-}

@@ -1,4 +1,0 @@
-{
-  "name": "scope-to-acceptance",
-  "required_snippets": ["## Workflow", "## Output Contract", "## Gate Rules"]
-}

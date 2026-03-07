@@ -1,0 +1,10 @@
+skill: threat-model-baseline
+skill_path: skills/threat-model-baseline/SKILL.md
+gate_requirements:
+  required_snippets:
+    - "## Workflow"
+    - "## Required Output"
+    - "## Gate Rules"
+grader: markers
+rate: 0.875
+cases: []

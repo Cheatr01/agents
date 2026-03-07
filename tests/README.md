@@ -9,7 +9,9 @@ Reference:
 
 - `test_fixtures/` shared fixtures only (cross-skill fixtures, common expectations)
 - `src/` test code and per-skill tests (mirrors `skills/`)
-- `src/skills/<skill-name>/` is the primary home for that skill's tests, prompts, sample responses, and gate requirements
+- `src/skills/<skill-name>/` is the primary home for that skill's tests
+  - preferred format: single-file YAML suite (`*.eval.yaml` / `*.eval.yml`)
+  - every suite YAML is validated against [skill-suite.schema.yaml](/Users/jiri/agents/tests/src/common/skill-suite.schema.yaml)
 - `results/` generated test outputs
 
 ## Quick Start
@@ -38,10 +40,16 @@ python3 tests/src/common/run_skill_suite.py \
 
 - Repository mode discovers `tests/src/skills/*` and runs a separate isolated flow per skill.
 - Each skill flow can run:
-  - gate lint (`gate_requirements.json`) if present
-  - one or more evals (`eval_config.json` or `*.eval_config.json`) if present
+  - schema lint (`schema:<eval>`) for every suite YAML before any eval execution
+  - gate lint from embedded `gate_requirements` in the suite YAML, or legacy `gate_requirements.json`
+  - one or more evals (`eval_config.json`, `*.eval_config.json`, `eval.yaml`, `*.eval.yaml`) if present
 - Outputs are isolated per skill under `tests/results/skills/<skill>/`.
 - Repo summary is written to `tests/results/repo-suite-summary.json`.
 - The targeted prompt set validates response contracts and negative controls.
-- The gate lint discovers `gate_requirements.json` files inside each skill test folder and validates required sections/snippets in `skills/<skill>/SKILL.md`.
-- Replace sample responses with real model outputs to track regressions across revisions.
+- The preferred suite YAML contains `suite_class`, `skill`, `skill_path`, optional `gate_requirements`, required `grader`, required `rate`, and required `cases`.
+- The gate lint validates `gate_requirements.required_snippets` against the file in `skill_path`.
+- Eval runner executes each case live via `codex exec` and then grades marker expectations on the captured response.
+- For YAML eval suites, keep each case self-contained (`prompt` + `expected`) with no pre-generated response fixtures.
+- `eval_name` is optional for YAML suites; if omitted, it is derived from the config file name.
+- `cases` is required by schema and may be an empty array.
+- Optional per-eval runtime knobs: `codex_timeout_seconds`, `codex_sandbox`, `codex_model`, `codex_reasoning_effort`, `codex_extra_args`.

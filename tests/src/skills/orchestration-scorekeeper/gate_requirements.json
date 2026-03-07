@@ -1,4 +1,0 @@
-{
-  "name": "orchestration-scorekeeper",
-  "required_snippets": ["## Required Execution", "## Output Contract", "## Gate Rules"]
-}
