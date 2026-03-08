@@ -1,0 +1,76 @@
+eval_type: skill
+skill: feature-discovery-loop
+skill_path: skills/feature-discovery-loop/SKILL.md
+gate_requirements:
+  required_snippets:
+    - "## Workflow"
+    - "## Iteration Rules"
+    - "## Output Contract"
+grader: markers
+rate: 0.875
+cases:
+  - id: fdl_explicit_01
+    prompt: Pouzij $feature-discovery-loop a priprav se mnou feature brainstorming pred team orchestration.
+    expected:
+      must_include:
+        - "Business Brief:"
+        - "Feature Name:"
+        - "Chosen Direction Rationale:"
+        - "Ready for Team Orchestration:"
+      must_not_include: []
+
+  - id: fdl_implicit_01
+    prompt: Potrebuju pred implementaci se mnou vymyslet novou feature, rozvetvit vic variant a pak vybrat nejlepsi business zadani.
+    expected:
+      must_include:
+        - "Problem Statement:"
+        - "Alternative Directions Considered:"
+        - "Chosen Direction Rationale:"
+        - "Technical details intentionally deferred:"
+      must_not_include: []
+
+  - id: fdl_iterative_01
+    prompt: Mame napad na AI shrnuti ticketu, ale nejsem si jisty jestli je to opravdu nejlepsi feature. Chci challenge loop a navraty k alternativam.
+    expected:
+      must_include:
+        - "Alternative Directions Considered:"
+        - "Chosen Direction Rationale:"
+        - "Open Questions:"
+      must_not_include: []
+
+  - id: fdl_handoff_01
+    prompt: Vrat finalni business brief pro dalsiho agenta, ktery spusti team orchestration. Bez technickeho navrhu.
+    expected:
+      must_include:
+        - "Business Brief:"
+        - "Scope (business):"
+        - "Non-goals:"
+        - "Team Orchestration Handoff:"
+      must_not_include: []
+
+  - id: fdl_regression_01
+    prompt: Trvam na tom, aby vysledek mel metriky, assumptions a MVP validacni plan.
+    expected:
+      must_include:
+        - "Assumptions:"
+        - "Success Metrics:"
+        - "MVP Validation Plan:"
+      must_not_include: []
+
+  - id: fdl_negative_01
+    prompt: Preloz do anglictiny vetu Ahoj svete.
+    expected:
+      must_include: []
+      must_not_include:
+        - "Business Brief:"
+        - "Feature Name:"
+        - "Ready for Team Orchestration:"
+
+  - id: fdl_negative_02
+    prompt: Oprav preklep v README a nic vic.
+    expected:
+      must_include: []
+      must_not_include:
+        - "Alternative Directions Considered:"
+        - "Chosen Direction Rationale:"
+        - "Team Orchestration Handoff:"

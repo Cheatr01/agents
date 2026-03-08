@@ -1,0 +1,4 @@
+interface:
+  display_name: "Feature Discovery Loop"
+  short_description: "Brainstorm and refine product features"
+  default_prompt: "Use $feature-discovery-loop to explore and iterate on a new product feature until it is ready for handoff to team orchestration."
