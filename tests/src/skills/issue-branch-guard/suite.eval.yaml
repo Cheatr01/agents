@@ -1,6 +1,12 @@
 eval_type: skill
 skill: issue-branch-guard
 skill_path: skills/issue-branch-guard/SKILL.md
+gate_requirements:
+  required_snippets:
+    - "This is an opt-in parallel-work safety check"
+    - "`<sub-issue>-<subtask-slug>`"
+    - "Do not apply this guard to a single-agent increment"
+    - "Never switch or create a branch over unowned dirty changes."
 grader: markers
 rate: 0.875
 cases: []

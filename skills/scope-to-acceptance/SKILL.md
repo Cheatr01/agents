@@ -1,93 +1,39 @@
 ---
 name: scope-to-acceptance
-description: Convert problem statements into execution-ready scope, non-goals, acceptance criteria, assumptions, and dependency mapping.
-metadata:
-  short-description: PM scope and acceptance template
-  tags:
-    - pm
-    - planning
-    - requirements
-    - governance
+description: Independently convert an ambiguous product or software request into a compact, testable scope and acceptance record. Use before engineering handoff when the request lacks a clear outcome, boundary, or success signal; this is not part of team-orchestrator execution.
 ---
 
 # Scope To Acceptance
 
-Use this skill in Phase 1 to transform ambiguous requests into execution-ready scope.
-
-## Role Scope
-
-- Primary: PM
-- Secondary reviewers: Tech Lead, Architect
-
-## Use When
-
-- Problem statement is broad or underspecified
-- Multiple possible interpretations exist
-- Teams need clear boundaries before issue decomposition
-
-## Inputs Required
-
-- User/business request
-- Constraints (time, budget, platform, compliance)
-- Known architecture constraints
-- Existing pain points and success signal
-
-## Output Quality Bar
-
-Every acceptance criterion must be:
-
-- Observable (someone can verify it)
-- Binary (pass/fail)
-- Testable (manual or automated)
-- Scoped (ties to in-scope area)
+Use this before engineering orchestration, not inside it. Do not invoke it for a typo, a fully specified technical task, or to restate a product brief that already answers these questions.
 
 ## Workflow
 
-1. Define the target outcome in one sentence.
-2. Write explicit in-scope boundaries.
-3. Write explicit non-goals.
-4. Draft acceptance criteria with test signal.
-5. Capture assumptions and unresolved questions.
-6. Build dependency map with owners and risk.
-7. Mark blockers that prevent issue breakdown.
-
-## Dependency Classification
-
-For each dependency, classify:
-
-- Type: technical, product, legal, operational, external service
-- Criticality: blocking, high, medium, low
-- Owner: role or team
-- Failure impact: delivery, quality, security, timeline
+1. Write the one-sentence user outcome.
+2. Set the smallest in-scope boundary and explicit non-goals.
+3. Define up to five observable acceptance criteria, each with its validation signal.
+4. List only assumptions or dependencies that can block the increment.
+5. Mark whether the task is ready to implement or needs a user decision.
 
 ## Output Contract
 
-- Outcome Statement:
-- Scope (in):
-- Non-goals (out):
-- Acceptance Criteria:
-- AC1:
-- AC2:
-- AC3:
-- Assumptions:
-- Open Questions:
-- Dependencies:
-- Blockers:
-- Ready for Subtask Breakdown: yes/no
+```
+Outcome Statement: <one sentence>
+Scope (in): <bounded list>
+Non-goals (out): <bounded list>
+Acceptance Criteria:
+- AC1: <pass/fail signal>
+- AC2: <pass/fail signal>
+- AC3: <pass/fail signal, when applicable>
+Assumptions: <only material assumptions>
+Open Questions: <only blockers>
+Dependencies: <owner + impact, if any>
+Blockers: <none or decision needed>
+Ready for Subtask Breakdown: yes/no
+```
 
 ## Gate Rules
 
-- No subtask issue creation before `Ready for Subtask Breakdown = yes`.
-- If blockers exist, PM must route to Tech Lead with mitigation options.
-
-## Anti-Patterns
-
-- "Should work" style acceptance criteria
-- Hidden non-goals
-- Dependencies without owners
-- Conflating assumptions with requirements
-
-## Integrations
-
-- Feed outputs into `gh-subtask-breakdown`.
-- Use with `orchestration-scorekeeper` to anchor C/R/E evidence.
+- Do not create a plan or subtask solely to answer an unresolved product decision.
+- Keep acceptance criteria binary and tied to the current increment.
+- If a prerequisite is unavailable, stop at the blocker instead of expanding scope.

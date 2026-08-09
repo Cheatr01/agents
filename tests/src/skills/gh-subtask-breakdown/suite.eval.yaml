@@ -1,6 +1,11 @@
 eval_type: skill
 skill: gh-subtask-breakdown
 skill_path: skills/gh-subtask-breakdown/SKILL.md
+gate_requirements:
+  required_snippets:
+    - "only when GitHub issues or parallel writers are explicitly required"
+    - "`<sub-issue>-<subtask-slug>`"
+    - "Do not use GitHub as a prerequisite for a single-agent local change."
 grader: markers
 rate: 0.875
 cases: []

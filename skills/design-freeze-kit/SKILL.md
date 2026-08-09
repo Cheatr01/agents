@@ -1,102 +1,27 @@
 ---
 name: design-freeze-kit
-description: Define and validate design freeze deliverables including token schema, naming rules, component inventory, accessibility baseline, and migration/versioning notes.
-metadata:
-  short-description: Design freeze package for web/app
-  tags:
-    - design-system
-    - frontend
-    - accessibility
-    - governance
+description: Define a minimal, stable design-system decision for reusable tokens or components that multiple UI changes depend on. Use before parallel visual implementation or a design-system breaking change; do not use for a local UI tweak.
 ---
 
 # Design Freeze Kit
 
-Use this skill in Phase 2.5 to formalize design-system contracts before visual implementation.
-
-## Role Scope
-
-- Primary: Web Designer, App Designer
-- Implementation partner: Frontend Engineer
-
-## Inputs Required
-
-- UI scope for this delivery
-- Existing token/system baseline
-- Component usage inventory
-- Accessibility requirements
-
 ## Required Deliverables
 
-### Token Schema
-
-Must include at least:
-
-- Color tokens (semantic and state)
-- Typography tokens
-- Spacing/size tokens
-- Radius/elevation tokens
-- Motion tokens
-
-### Naming Rules
-
-- Stable token naming grammar
-- Alias and deprecation policy
-- Reserved naming prefixes
-
-### Component Inventory
-
-- Component name
-- Variant list
-- States
-- Usage boundaries
-- Owner role
-
-### Accessibility Baseline
-
-- Focus visibility policy
-- Contrast targets
-- Keyboard interaction expectations
-- Semantic and ARIA expectations
-
-### Versioning and Migration
-
-- Design-system version tag
-- Breaking token/component policy
-- Migration note for changed contracts
-
-## Workflow
-
-1. Normalize token taxonomy.
-2. Lock naming grammar.
-3. Finalize component inventory and ownership.
-4. Validate accessibility baseline for key surfaces.
-5. Publish version + migration notes.
-6. Issue freeze verdict.
+- Affected token/component names and owner.
+- States and accessibility expectation for the changed reusable surface.
+- Compatibility or migration note if existing consumers change.
 
 ## Output Contract
 
-- Token Schema:
-- Naming Rules:
-- Component Inventory:
-- Accessibility Baseline:
-- Version:
-- Migration Notes:
-- Freeze Verdict: READY/CONDITIONAL/NOT_READY
+```
+Reusable surface: <tokens/components>
+Accessibility: <focus, semantics, contrast as applicable>
+Compatibility: <not applicable / migration>
+Verdict: READY / CONDITIONAL / NOT_READY
+```
 
 ## Gate Rules
 
-- No FE visual implementation before `READY`.
-- `CONDITIONAL` allowed only for non-breaking documentation gaps.
-- Breaking token changes after freeze require version bump and migration note.
-
-## Anti-Patterns
-
-- Raw hex/hardcoded spacing in implementation path
-- Ambiguous token naming
-- Components without ownership
-- Accessibility as deferred work
-
-## Integrations
-
-- Pair with `issue-branch-guard` so design changes stay tied to subtask branches.
+- A local layout adjustment can proceed without this freeze.
+- Do not require a version bump for a non-breaking internal addition.
+- A breaking reusable token/component change needs a migration note before parallel adoption.
