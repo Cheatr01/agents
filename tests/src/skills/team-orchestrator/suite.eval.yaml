@@ -1,6 +1,30 @@
 eval_type: skill
 skill: team-orchestrator
 skill_path: skills/team-orchestrator/SKILL.md
+gate_requirements:
+  required_snippets:
+    - "## Default Operating Mode"
+    - "Use one lead agent and one branch"
+    - "`fork_turns: none`"
+    - "run the full suite once"
+    - "## Engineering-Brief Preflight"
+    - "Token budget:"
+    - "Product/discovery skills may prepare that brief separately"
 grader: markers
 rate: 0.875
-cases: []
+cases:
+  - id: lean_local_increment
+    prompt: "Pouzij $team-orchestrator pro opravu jedne chyby v lokalni desktopove aplikaci. Nejde o verejne API ani o paralelni praci."
+    expected:
+      must_include:
+        - "Agents:"
+        - "Gates:"
+        - "Validation budget:"
+      must_not_include: []
+  - id: security_increment
+    prompt: "Pouzij $team-orchestrator pro zmenu opravneneho pristupu k citlivym nahravkam."
+    expected:
+      must_include:
+        - "Risk:"
+        - "security"
+      must_not_include: []

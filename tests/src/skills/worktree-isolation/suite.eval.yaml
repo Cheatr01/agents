@@ -1,6 +1,12 @@
 eval_type: skill
 skill: worktree-isolation
 skill_path: skills/worktree-isolation/SKILL.md
+gate_requirements:
+  required_snippets:
+    - "two or more concurrently writing subagents"
+    - "`<sub-issue>-<subtask-slug>`"
+    - "`.worktrees/<sub-issue>-<subtask-slug>`"
+    - "Do not use this skill for review-only agents."
 grader: markers
 rate: 0.875
 cases: []

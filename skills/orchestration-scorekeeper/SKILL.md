@@ -1,137 +1,49 @@
 ---
 name: orchestration-scorekeeper
-description: Compute and maintain consistent C/R/E delivery scoring, escalation thresholds, and escalation reason logs for Team Orchestrator runs.
-metadata:
-  short-description: C/R/E scoring and escalation log
-  tags:
-    - orchestration
-    - governance
-    - risk
-    - planning
+description: Calculate and revalidate a compact C/R/E delivery score for a bounded software increment when a coordination, escalation, or release decision needs evidence. Do not use for trivial edits or as a reason to automatically add agents.
 ---
 
 # Orchestration Scorekeeper
 
-Use this skill when Tech Lead or PM needs consistent delivery scoring in Phase 0 and at any escalation point.
+Use the score to choose validation and coordination intensity, not to manufacture process.
 
-This skill is the canonical scoring source for Team Orchestrator. If another skill proposes a conflicting score, this skill wins.
+## Rubric
 
-## Role Scope
+- **C (complexity):** 1 trivial/single-file; 2 bounded component; 3 one or two integrations; 4 cross-module; 5 architectural/platform change.
+- **R (risk):** 1 easy rollback; 2 regression possible; 3 production workflow; 4 security/reliability sensitive; 5 compliance/critical.
+- **E (exposure):** 1 internal; 2 limited users; 3 user-facing; 4 public integration; 5 public and sensitive data.
 
-- Primary: Tech Lead, PM
-- Secondary consumers: Architect, Security Reviewer, Quality Lead
+`Delivery Score = C × R × E`
 
-## Use When
-
-- Starting a new orchestration run (Phase 0)
-- Scope expands or shrinks
-- Contract/design freeze is violated or reopened
-- New security/performance risk is discovered
-- Before final governance gate (Phase 5)
-
-## Inputs Required
-
-- Task statement and intended outcome
-- Current scope boundaries and non-goals
-- Known architecture/contract constraints
-- Data sensitivity and exposure context
-- Current findings (quality, security, performance)
-
-## Canonical Rubric
-
-### Complexity (C)
-
-1. Trivial edit, single file, no behavioral change
-2. Small change, single component, clear boundary
-3. Medium feature, 1-2 modules, moderate integration
-4. Cross-module behavior and integration impact
-5. Architectural shift, platform-wide implications
-
-### Risk (R)
-
-1. Safe internal change, easy rollback
-2. Regression possible, moderate blast radius
-3. Production impact likely if wrong
-4. Security-sensitive or high reliability exposure
-5. Compliance/critical system exposure
-
-### Exposure (E)
-
-1. Internal-only, non-customer-facing
-2. Limited users/low business criticality
-3. User-facing core workflow
-4. Public API or external integration dependency
-5. Public plus sensitive data path
-
-## Tier Mapping
-
-`Delivery Score = C * R * E`
-
-- 1-10: Minimal Team Mode
-- 11-30: Standard Team
-- 31-60: Extended Team
-- 61+: Full Governance Mode
+| Score | Guidance |
+| --- | --- |
+| 1–10 | One agent; focused check; no formal governance by default |
+| 11–30 | Add one targeted review or gate only when its trigger is present |
+| 31–60 | Use a short plan; consider bounded parallelism after an interface is stable |
+| 61+ | Require explicit architecture/security/release planning before writes |
 
 ## Required Execution
 
-1. Score C, R, E using evidence from current scope.
-2. Compute Delivery Score and map tier.
-3. Compare against configured escalation threshold.
-4. If tier crossed, produce mandatory escalation package:
-- what changed
-- why score changed
-- which roles must be added
-- which gates must be re-run
-5. Append log entry to threshold history.
-
-## Escalation Reason Taxonomy
-
-Use one or more reason codes:
-
-- `SCOPE_GROWTH`
-- `CONTRACT_CHANGE`
-- `DESIGN_CHANGE`
-- `SECURITY_FINDING`
-- `PERF_REGRESSION`
-- `DATA_SENSITIVITY_CHANGE`
-- `DEPENDENCY_RISK`
+1. State one evidence phrase for each factor.
+2. Choose only the required role or gate, if any.
+3. Re-score only on material scope, interface, data-sensitivity, security, or measured-performance change.
+4. Append one short line to the external delivery ledger; do not replay prior score reports.
 
 ## Output Contract
 
-Return exactly this block in every run:
-
-- Task:
-- C: <value> (<evidence>)
-- R: <value> (<evidence>)
-- E: <value> (<evidence>)
-- Delivery Score:
-- Tier:
-- Escalation Threshold:
-- Escalation Triggered: yes/no
-- Reason Codes:
-- Required Role Changes:
-- Gates to Re-run:
-- Score Log Entry:
-
-## Score Log Format
-
-`<timestamp> | C=<n> R=<n> E=<n> Score=<n> Tier=<name> Triggered=<yes/no> Reasons=<codes>`
+```
+Task: <bounded increment>
+C: <n> (<evidence>)
+R: <n> (<evidence>)
+E: <n> (<evidence>)
+Delivery Score: <n> — <tier>
+Change since last score: <none or reason>
+Required addition: <none or one role/gate>
+Score Log Entry: <timestamp> C=<n> R=<n> E=<n> score=<n> reason=<none|code>
+```
 
 ## Gate Rules
 
-- No implementation track starts without an initial score.
-- No phase transition on tier change without an updated score log.
-- No final acceptance without score revalidation.
-
-## Anti-Patterns
-
-- Scoring by intuition without evidence
-- Keeping old score after scope shift
-- Hiding escalation to preserve timeline
-- Using inconsistent rubrics between runs
-
-## Integrations
-
-- Pair with `scope-to-acceptance` for better C/E calibration.
-- Pair with `contract-drift-guard` to auto-trigger re-scoring.
-- Pair with `security-gate-runbook` and `performance-regression-lab` for R updates.
+- Do not score a typo-only or clearly bounded mechanical edit.
+- A tier increase does not itself require a larger team; name the concrete trigger.
+- Re-score before accepting a high-risk release decision.

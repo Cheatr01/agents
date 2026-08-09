@@ -20,4 +20,5 @@ This repository stores reusable assets for local agent workflows.
 ## Notes
 
 - Add new rules under `subagents/rules/`.
+- Keep pre-orchestration discovery and ideation skills under `skills/` and design them to hand off business briefs, not technical implementation plans.
 - Keep this file updated when structure or conventions change.

@@ -1,53 +1,32 @@
 ---
 name: issue-branch-guard
-description: Enforce pre-write discipline by requiring an assigned GitHub subtask issue and matching branch checkout before any file modifications.
-metadata:
-  short-description: Issue-to-branch pre-write guard
-  tags:
-    - git
-    - github
-    - governance
-    - workflow
+description: Verify issue-to-branch traceability before concurrent or GitHub-governed writes. Use only when the user requires GitHub traceability or when two or more writers are active; do not block a normal single-agent local change.
 ---
 
 # Issue Branch Guard
 
-Use this skill for any role that will write to disk.
-
-## Rule
-
-No write is allowed before:
-
-1. Assigned subtask issue is known.
-2. Matching branch is checked out:
-   - `codex/<parent-issue>-<task-slug>/<sub-issue>-<subtask-slug>`
+This is an opt-in parallel-work safety check, not a universal precondition for writing files.
 
 ## Pre-Write Sequence
 
-1. Confirm assigned parent issue and sub-issue id.
-2. Compute expected branch name from issues + slugs.
-3. Check current branch.
-4. If branch is missing:
-   - create it from integration branch.
-5. If current branch is different:
-   - stop and switch to expected branch.
-6. Only then modify files.
+1. Confirm the assigned subtask issue and expected branch `<sub-issue>-<subtask-slug>`.
+2. Verify that the active worktree is bound to that branch.
+3. If the branch does not exist, create it from the named integration branch.
+4. If the worktree is dirty with another task's changes, stop and report the conflict.
+5. Record one `pass` or `blocked` line in the delivery ledger.
 
-## Validation Checks
+## Output Contract
 
-- Branch contains assigned sub-issue id.
-- Branch path starts with parent issue + task slug.
-- Commit scope matches the assigned subtask boundaries.
+```
+Issue: <id/url>
+Expected branch: <sub-issue>-<subtask-slug>
+Current branch/worktree: <value>
+Guard: pass/blocked
+Reason: <one line>
+```
 
-## Failure Handling
+## Gate Rules
 
-- Missing issue id: stop and escalate to Architect/Tech Lead.
-- Naming collision: stop and request normalized slug.
-- Wrong branch with pending changes: stop and escalate (do not continue writing).
-
-## Output
-
-- Assigned issue id(s)
-- Current branch and expected branch
-- Guard status: `pass` or `blocked`
-- Reason and escalation target if blocked
+- Do not apply this guard to a single-agent increment unless the user requested traceability.
+- Never switch or create a branch over unowned dirty changes.
+- A worker may modify only its assigned files while the guard is active.

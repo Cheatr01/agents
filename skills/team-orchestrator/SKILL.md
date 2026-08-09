@@ -1,462 +1,104 @@
 ---
 name: team-orchestrator
-description: Intelligent adaptive orchestration of a multi-agent software delivery team with scoring model, auto-escalation, freeze checkpoints, continuous security, design-system extraction, and strict Git workflow.
-metadata:
-  short-description: Enterprise-grade adaptive orchestration engine
-  tags:
-    - orchestration
-    - multi-agent
-    - governance
-    - architecture
-    - security
-    - git
-    - design-system
+description: Plan and run a bounded engineering implementation increment when the user explicitly asks for multi-agent coding coordination, role assignment, or delivery governance. Require an engineering-ready brief; do not perform product discovery, requirements analysis, or roadmap planning.
 ---
 
-# Team Orchestrator Skill
+# Lean Engineering Delivery Orchestrator
 
-You are the **Orchestrator** — an adaptive engineering governance engine.
+Deliver one bounded engineering increment: one implementation milestone or at most three tightly coupled coding issues. Do not turn a whole roadmap into one thread.
 
-You dynamically select roles, manage risk, enforce freeze checkpoints, and optimize parallel execution.
+## Engineering-Brief Preflight
 
-You do NOT automatically activate all roles.
+Accept work only when the request supplies all of these:
 
----
+- technical outcome or defect to change;
+- scoped components, files, or interface boundary;
+- explicit non-goal or boundary;
+- observable validation signal; and
+- applicable constraints (platform, compatibility, security, performance).
 
-# 1️⃣ Scoring Model
+Do not infer product intent, decide user outcomes, or turn an ambiguous feature request into a technical plan. If a requirement is missing, stop with:
 
-Before selecting roles, compute:
+```
+Engineering brief required
+Missing: <items>
+Needed next: <one concise technical decision or an authoritative brief>
+```
 
-## Complexity (C)
-1 = trivial  
-2 = small change  
-3 = medium feature  
-4 = cross-module change  
-5 = architectural impact
+Product/discovery skills may prepare that brief separately, but are not a phase or dependency of this orchestrator.
 
-## Risk (R)
-1 = safe internal change  
-2 = regression possible  
-3 = production impact  
-4 = security sensitive  
-5 = compliance/critical exposure
+## Default Operating Mode
 
-## Exposure (E)
-1 = internal only  
-2 = limited users  
-3 = user-facing  
-4 = public API  
-5 = public + sensitive data
+- Use one lead agent and one branch unless parallel work has a clear dependency boundary.
+- Use Terra for routine implementation, inspection, Git operations, and test coordination. Reserve Sol for an architecture decision, a security decision, or final high-risk review.
+- Do not create a subagent, GitHub issue, worktree, or reviewer unless the user explicitly requests it or the delivery score requires it. In the current Codex environment, respect the platform's delegation rules.
+- When subagents are authorized, use at most two writers and one independent reviewer. Give every subagent `fork_turns: none` and only: objective, owned files, relevant interfaces, constraints, and one validation command.
+- Keep a short external delivery ledger in the repository or task artifact. Use `references/delivery-ledger.md` when creating one; do not reconstruct state from long thread history.
 
----
+## Triage and Budget
 
-## Score Formula
+Score only when coordination or a gate decision is needed. Use `C × R × E` from `orchestration-scorekeeper`, but treat the result as validation intensity—not a mandatory team size.
 
-Delivery Score = R × C × E
+Set a token budget before delegating. Use the platform's actual token counter when it is available; otherwise label it `estimated` and enforce the proxy limits in `references/delivery-budget.md`. Never claim an estimate is measured usage.
 
-### Interpretation
+| Condition | Default delivery shape |
+| --- | --- |
+| C/R/E all low; one bounded change | One agent, focused validation, no formal gate |
+| One real interface, UI, or regression risk | Lead plus one targeted specialist or reviewer |
+| Independent file areas with a frozen interface | Up to two writers in isolated worktrees |
+| Auth, sensitive data, public API, migration, or architectural change | Add the relevant architecture/security gate before implementation |
 
-1–10 → Minimal Team Mode  
-11–30 → Standard Team  
-31–60 → Extended Team  
-61+ → Full Governance Mode
+State the following compact plan before writing:
 
----
+```
+Increment: <one milestone or 1–3 linked issues>
+Scope / non-goal: <one line each>
+Risk: C=<n> R=<n> E=<n>, only if scored
+Token budget: <measured or estimated> <limit>; spent=<value or unavailable>
+Agents: <names and bounded ownership, or none>
+Gates: <only gates triggered by this change>
+Validation budget: worker=<focused>; integration=<once>; manual=<needed/not needed>
+Stop condition: <what requires user input or ends the increment>
+```
 
-# 2️⃣ Orchestration Plan (Mandatory Output)
+Do not repeat the full plan after every step. Update it only when scope, ownership, or risk changes.
 
-Each run MUST start with:
+## Gate Selection
 
-## Orchestration Plan
+Load exactly the needed supporting skill; do not load every governance skill.
 
-Task Classification:
-Complexity (C):
-Risk (R):
-Exposure (E):
-Delivery Score:
-Parent Task:
-Parent Issue:
-Integration Branch:
+- `contract-freeze-kit` and `contract-drift-guard`: a shared/public API, persisted schema, or multi-writer interface changes.
+- `design-freeze-kit`: reusable design tokens/components change; not for a local UI adjustment.
+- `threat-model-baseline` and `security-gate-runbook`: auth, secrets, permissions, sensitive data, external execution, or a material security finding is involved.
+- `quality-gate-matrix`: the changed behaviour has non-obvious regression risk or a release decision needs evidence.
+- `performance-regression-lab`: an SLO, benchmark, or observed regression exists.
+- `gh-subtask-breakdown`, `issue-branch-guard`, `worktree-isolation`, and `integration-merge-governor`: only for user-requested GitHub traceability or two or more concurrent writers.
 
-Selected Roles:
-- Role → justification
+## Execution and Validation Budget
 
-Skipped Roles:
-- Role → justification
+1. Implement the smallest vertical slice that proves the user outcome.
+2. Each writer runs one focused check after its last code change.
+3. The lead reviews the changed files and repeats a focused check only if code changed after the writer's evidence.
+4. After integration, run the full suite once and packaging/build once when relevant. Do not repeat equivalent green runs.
+5. When the project has a required UI, hardware, permission, or external-system check, run that project's manual smoke gate immediately after the vertical slice.
+6. Mark every capability `automated`, `packaged`, `manual`, or `not tested`. Never infer manual success from unit tests.
 
-Parallel Tracks:
-Iteration Risk:
-Subtask Issue Map:
-- Subtask → issue id/url → owner role → branch
+Use `scripts/run-compact.sh <label> [--history <path>] -- <command ...>` for verbose checks. It writes the full log to a private temporary file and returns only a status summary. With `--history`, it warns before repeating an identical successful label. Never print environment values or unredacted logs.
 
-Escalation Threshold:
-(score level that triggers expansion)
+## Escalation and Stop Rules
 
----
+Re-score and add only the missing expertise when a new auth/data boundary, breaking interface, material defect, or measured regression appears. Do not re-run discovery, all freezes, or all reviewers merely because any file changed.
 
-# 3️⃣ Auto-Escalation Engine
+Stop and ask the user when a decision changes product scope, external cost, production state, or risk acceptance. Stop at a required manual hardware gate until the user can perform it.
 
-During execution, monitor:
+## Completion Record
 
-- Scope growth
-- Contract changes
-- Security findings
-- Performance regression
-- Cross-module drift
-- New data sensitivity
+Return a compact handoff:
 
-If any occurs:
-
-1. Recalculate C, R, E
-2. Recompute Delivery Score
-3. If score crosses tier boundary:
-    - Activate additional roles
-    - Document reason
-    - Update orchestration plan
-
-Escalation examples:
-
-- New auth added → include Security Reviewer
-- Data model touched → include Architect
-- Performance issue detected → include Efficiency Expert
-- Cross-module conflict → include Tech Lead
-
-Auto-escalation is mandatory. Silent scope expansion is forbidden.
-
----
-
-# 4️⃣ Roles
-
-Core role definitions (self-contained):
-
-## PM (Product Manager)
-- Mission: clarify scope, user outcomes, non-goals, dependencies, and acceptance criteria.
-- Activate when: scope is ambiguous, business constraints are unclear, or acceptance boundaries are missing.
-- Outputs: scope statement, acceptance criteria, open questions, risks and mitigations.
-
-## Architect
-- Mission: define strong API/data contracts, integration boundaries, error model, versioning, and auth model.
-- Activate when: cross-module change, data model impact, contract design, or migration planning is required.
-- Outputs: contract spec, architecture decisions, impact assessment, Contract Freeze recommendation.
-
-## Web Designer
-- Mission: define web design tokens, component inventory, and accessibility baseline.
-- Activate when: web UI changes require reusable design primitives or visual consistency rules.
-- Outputs: token set (web), component inventory (web), accessibility baseline, Design Freeze readiness note.
-
-## App Designer
-- Mission: define app/mobile tokens, component inventory, and interaction/accessibility baseline.
-- Activate when: app/mobile surfaces change and design-system alignment is required.
-- Outputs: token set (app), component inventory (app), accessibility baseline, Design Freeze readiness note.
-
-## Backend Engineer
-- Mission: implement backend behavior within frozen contracts and maintain deterministic error handling.
-- Activate when: server/API/data-layer changes are needed.
-- Outputs: backend implementation, updated tests, compatibility/observability notes, risk notes.
-
-## Frontend Engineer
-- Mission: implement frontend behavior and UI using frozen contracts and design tokens/components.
-- Activate when: user-facing behavior or UI needs implementation.
-- Outputs: frontend implementation, updated tests, accessibility and token-usage compliance notes.
-
-## Efficiency Expert
-- Mission: identify bottlenecks and ship measurable performance improvements.
-- Activate when: latency/throughput/resource regressions appear or performance targets are at risk.
-- Outputs: bottleneck analysis, optimization changes, before/after metrics summary.
-
-## Quality Lead
-- Mission: define quality strategy and release-readiness gates for the scoped change.
-- Activate when: change has meaningful user impact or regression risk that needs explicit test governance.
-- Outputs: quality plan, coverage/gap assessment, gate decision (pass/fail/blocked) with rationale.
-
-## Quality Engineer
-- Mission: implement and run unit/integration/negative/regression tests for changed behavior.
-- Activate when: implementation is in progress or completed and test execution evidence is needed.
-- Outputs: added/updated tests, commands executed, pass/fail summary, remaining gaps and risks.
-
-## Security Reviewer
-- Mission: continuously assess authn/authz, input handling, data exposure, and misuse risk.
-- Activate when: auth/data/sensitive workflows change, or risk/compliance profile increases.
-- Outputs: findings by severity, remediation guidance, residual risk statement, security gate recommendation.
-
-## Tech Lead
-- Mission: own delivery governance, sequencing, freeze compliance, and final technical acceptance.
-- Activate when: orchestration plan is created, scope changes, or final merge readiness must be decided.
-- Outputs: execution guardrails, acceptance checklist result, residual risks, merge readiness decision.
-
-Orchestrator selects minimal safe subset.
-
----
-
-# 5️⃣ Global Principles
-
-- Strong contracts enable parallelism
-- Security is continuous
-- Small batches
-- Micro-commits
-- No silent contract change
-- Least privilege
-- Freeze checkpoints are mandatory governance controls
-- No write before issue + branch binding
-- Every write must be traceable to one subtask issue
-
----
-
-# 6️⃣ Freeze Checkpoints (Hard Gates)
-
-## 🔒 Contract Freeze Checkpoint
-
-Triggered after Phase 2.
-
-Requirements:
-- API contract complete
-- Error model defined
-- Versioning defined
-- Auth model defined
-- Example payloads provided
-- Threat model baseline done
-
-After freeze:
-- Breaking change requires:
-    - version bump
-    - architect approval
-    - orchestration re-evaluation
-
-FE parallel integration allowed only AFTER contract freeze.
-
----
-
-## 🎨 Design Freeze Checkpoint
-
-Triggered after Phase 2.5 (Design System Extraction).
-
-Requirements:
-- Tokens defined
-- Naming stabilized
-- Component inventory finalized
-- Accessibility baseline defined
-- Version 0.x tagged
-
-After freeze:
-- Token breaking change requires:
-    - version bump
-    - migration note
-    - FE coordination
-    - re-evaluation of orchestration plan
-
-FE visual implementation allowed only AFTER design freeze.
-
----
-
-# 7️⃣ Orchestration Phases
-
-## Phase 0 — Setup
-Create integration branch:
-`codex/<parent-issue>-<task-slug>`
-Initialize scoring.
-Define escalation threshold.
-
----
-
-## Phase 1 — Discovery (if required)
-PM clarifies scope.
-
----
-
-## Phase 1.5 — Architecture Work Breakdown + GitHub Sync
-Architect decomposes the task into implementation-ready subtasks.
-
-Mandatory outputs:
-- Subtask list with:
-  - title
-  - owner role
-  - acceptance criteria
-  - dependencies
-  - risk notes
-- GitHub issue created for each subtask
-- Parent/child linkage (or explicit cross-links if hierarchy is unavailable)
-- Branch map:
-  - `codex/<parent-issue>-<task-slug>/<sub-issue>-<subtask-slug>`
-
-Hard gate:
-- No subagent may write to disk before it has:
-  - assigned subtask issue
-  - matching checked-out branch for that issue
-- Recommended execution support:
-  - Use `gh-subtask-breakdown` to generate and create subtask issues
-  - Use `issue-branch-guard` for pre-write checks per role
-
----
-
-## Phase 2 — Architecture + Threat Model
-Architect + Security produce strong contract.
-
-→ CONTRACT FREEZE
-
----
-
-## Phase 2.5 — Design System Extraction
-Designers extract structured design system.
-
-→ DESIGN FREEZE
-
----
-
-## Phase 3 — Implementation (Parallel)
-
-Backend Track
-Frontend Track
-Efficiency Track
-
-Parallelism allowed only after freeze gates.
-
-Replication allowed (multiple BE/FE tasks).
-
-Auto-escalation active during entire phase.
-
-Recommended parallel safety support:
-- Use `worktree-isolation` so each active subtask branch has an isolated worktree.
-
----
-
-## Phase 4 — Quality + Security
-QA + Security continuous validation.
-
----
-
-## Phase 5 — Final Governance Gates
-
-Tech Lead approval  
-Security approval  
-Score revalidation
-
-If score increased → possible escalation loop.
-
----
-
-## Phase 6 — Integration
-
-Merge all sub-branches into single:
-
-`codex/<parent-issue>-<task-slug>`
-
-CI must be green.
-Security must pass.
-
----
-
-# 8️⃣ Concurrency Rules
-
-- BE may split into concurrent bounded contexts
-- FE + BE parallel only after contract freeze
-- FE visual only after design freeze
-- Security runs continuously
-- Any freeze violation → re-evaluate plan
-- Each writer role uses a dedicated subtask branch (recommended: dedicated worktree)
-- No writer role commits directly to integration branch
-- Branch name must include assigned sub-issue id
-
----
-
-# 9️⃣ Git Workflow
-
-## Branch Model
-
-Integration branch:
-`codex/<parent-issue>-<task-slug>`
-
-Subtask branches:
-`codex/<parent-issue>-<task-slug>/<sub-issue>-<subtask-slug>`
-
-Examples:
-- `codex/412-checkout-hardening/451-api-error-model`
-- `codex/412-checkout-hardening/452-fe-token-migration`
-- `codex/412-checkout-hardening/453-security-abuse-cases`
-
----
-
-## Micro-Commit Policy
-
-Every small unit of work:
-1. Run checks
-2. Commit
-
-Format:
-type(scope): summary
-
-Types:
-feat | fix | refactor | test | docs | chore | perf | sec
-
-Examples:
-feat(api): add POST /checkout
-sec(auth): enforce RBAC
-perf(db): optimize query
-
----
-
-## Design System Versioning
-
-design-system/vX/
-
-Breaking changes:
-- version bump
-- migration doc
-- FE sync
-
----
-
-## Merge Rules
-
-- Rebase frequently
-- Resolve conflicts early
-- No direct merge without required approvals
-- Final state: single feature branch
-- CI green mandatory
-- Every merged branch must map to a linked subtask issue
-- Tech Lead verifies issue/branch traceability before merge approval
-
----
-
-# 🔟 Minimal Team Mode
-
-Triggered when Delivery Score ≤ 10.
-
-Examples:
-
-Low-risk bugfix:
-- Dev
-- Tech Lead (light)
-
-Security patch:
-- Dev
-- Security
-
-Performance fix:
-- Efficiency Expert
-- Dev
-
-UI tweak:
-- Designer
-- FE
-
----
-
-# 11️⃣ Definition of Done
-
-Work is done when:
-
-- Acceptance criteria satisfied
-- Delivery score validated
-- Contract freeze respected
-- Design freeze respected
-- Strong API contract implemented
-- Design System versioned
-- FE uses tokens (no hardcoded styles)
-- Tests green
-- Security approved
-- Tech Lead approved
-- All work merged into single feature branch
-- No unresolved high risks
-- Architect-created subtasks exist as GitHub issues with clear ownership
-- Every write-capable role worked from the matching issue branch
-- Every merged change maps to exactly one subtask issue
+```
+Outcome: <done / blocked>
+Changed: <files or components>
+Evidence: <focused/full/build/manual status>
+Residual risk: <none or explicit>
+Next increment: <one bounded next step, if any>
+```
