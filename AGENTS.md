@@ -7,6 +7,9 @@ This repository stores reusable assets for local agent workflows.
 ## Conventions
 
 - Keep files organized by domain (`skills/`, `subagents/`, `subagents/rules/`).
+- Keep Marketplace-ready plugin packages under `plugins/`; add their entries to
+  `.agents/plugins/marketplace.json` and keep the packaged skill copies aligned
+  with their canonical sources in `skills/`.
 - Prefer small, focused markdown docs and simple text-based configs.
 - Use clear naming so assets are easy to find and reuse.
 - Keep automated eval assets under `tests/`:
