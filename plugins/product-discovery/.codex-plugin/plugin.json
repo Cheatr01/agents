@@ -1,0 +1,18 @@
+{
+  "name": "product-discovery",
+  "version": "0.1.0",
+  "description": "Turn product opportunities into decision-ready business briefs and testable scope.",
+  "author": {
+    "name": "cheatr01"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Product Discovery",
+    "shortDescription": "Explore features and sharpen scope before delivery.",
+    "longDescription": "Use collaborative feature discovery for uncertain directions or define a compact scope and acceptance record for a known direction.",
+    "developerName": "cheatr01",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": "Help me turn this product idea into a ready brief."
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "name": "team-delivery",
+  "version": "0.1.0",
+  "description": "Coordinate bounded engineering delivery with targeted gates and parallel-work safeguards.",
+  "author": {
+    "name": "cheatr01"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Team Delivery",
+    "shortDescription": "Coordinate safe, focused engineering delivery.",
+    "longDescription": "Plan and run bounded engineering increments with only the governance, validation, and parallel-work safeguards the change requires.",
+    "developerName": "cheatr01",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": "Coordinate this bounded engineering increment."
+  }
+}
