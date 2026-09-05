@@ -24,4 +24,5 @@ This repository stores reusable assets for local agent workflows.
 
 - Add new rules under `subagents/rules/`.
 - Keep pre-orchestration discovery and ideation skills under `skills/` and design them to hand off business briefs, not technical implementation plans.
+- GitHub CLI authentication is available only outside the sandbox. Run `gh` authentication, pull-request, and API commands with escalated sandbox permissions; do not treat an in-sandbox authentication failure as an invalid GitHub login.
 - Keep this file updated when structure or conventions change.
