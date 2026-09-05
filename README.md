@@ -12,6 +12,6 @@ This repository stores assets for my agents, primarily for Codex.
 
 ## Marketplace
 
-The local Marketplace exposes `team-delivery`, `product-discovery`, and the
-standalone `aws-mcp` skill. `hello-world` remains an internal invocation/eval
-fixture and is intentionally not listed.
+The local Marketplace exposes `team-delivery`, `product-discovery`, and an
+`aws-mcp` plugin containing setup and operations skills. `hello-world` remains
+an internal invocation/eval fixture and is intentionally not listed.

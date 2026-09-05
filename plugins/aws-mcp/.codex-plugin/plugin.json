@@ -1,0 +1,18 @@
+{
+  "name": "aws-mcp",
+  "version": "0.1.0",
+  "description": "Set up and operate AWS through the managed AWS MCP Server with explicit credential safety.",
+  "author": {
+    "name": "cheatr01"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "AWS MCP",
+    "shortDescription": "Set up and use managed AWS MCP safely.",
+    "longDescription": "Configure the managed AWS MCP Server with OAuth or SigV4, then perform AWS operations through configured MCP tools.",
+    "developerName": "cheatr01",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": "Set up AWS MCP safely for this Codex host."
+  }
+}
