@@ -1,18 +1,18 @@
 {
   "name": "team-delivery",
-  "version": "0.1.0",
-  "description": "Coordinate bounded engineering delivery with targeted gates and parallel-work safeguards.",
+  "version": "0.2.0",
+  "description": "Coordinate bounded engineering delivery and evidence-driven bug fixing with targeted gates and parallel-work safeguards.",
   "author": {
     "name": "cheatr01"
   },
   "skills": "./skills/",
   "interface": {
     "displayName": "Team Delivery",
-    "shortDescription": "Coordinate safe, focused engineering delivery.",
-    "longDescription": "Plan and run bounded engineering increments with only the governance, validation, and parallel-work safeguards the change requires.",
+    "shortDescription": "Coordinate delivery and evidence-driven bug fixes.",
+    "longDescription": "Plan and run bounded engineering increments or investigate defects through adaptive evidence collection, root-cause analysis, verified implementation, and the safeguards the change requires.",
     "developerName": "cheatr01",
     "category": "Productivity",
     "capabilities": [],
-    "defaultPrompt": "Coordinate this bounded engineering increment."
+    "defaultPrompt": "Coordinate this bounded engineering increment or bug fix."
   }
 }

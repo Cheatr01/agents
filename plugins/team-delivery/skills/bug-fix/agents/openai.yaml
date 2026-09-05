@@ -1,0 +1,4 @@
+interface:
+  display_name: "BugFix"
+  short_description: "Diagnose and repair software defects safely"
+  default_prompt: "Use $bug-fix to investigate this defect, identify its root cause, and coordinate a verified repair."

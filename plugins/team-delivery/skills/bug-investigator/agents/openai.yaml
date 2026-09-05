@@ -1,0 +1,4 @@
+interface:
+  display_name: "Bug Investigator"
+  short_description: "Find and explain evidence-backed root causes"
+  default_prompt: "Use $bug-investigator to determine the root cause and produce an implementation-ready repair brief."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Bug Evidence Collector"
+  short_description: "Collect compact, source-linked bug evidence"
+  default_prompt: "Use $bug-evidence-collector to gather the logs, documentation, and observations needed to investigate this defect."

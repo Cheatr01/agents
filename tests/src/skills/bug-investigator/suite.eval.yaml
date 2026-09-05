@@ -1,0 +1,19 @@
+eval_type: skill
+skill: bug-investigator
+skill_path: skills/bug-investigator/SKILL.md
+gate_requirements:
+  required_snippets:
+    - "Do not edit implementation files"
+    - "Separate the trigger, root cause, propagation path, and final symptom"
+    - "## Root Cause Packet"
+    - "At low confidence"
+grader: markers
+rate: 1.0
+cases:
+  - id: low_confidence_next_evidence
+    prompt: "Pouzij $bug-investigator. Evidence podporuje dvě stejně pravděpodobné příčiny a chybí korelační ID. Vrať rozhodnutí, co má následovat; neimplementuj opravu."
+    expected:
+      must_include:
+        - "low"
+        - "evidence"
+      must_not_include: []
