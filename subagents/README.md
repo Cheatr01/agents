@@ -10,6 +10,8 @@ This folder contains role-specific Codex subagent TOML definitions.
 - `app-designer.toml`
 - `backend-engineer.toml`
 - `frontend-engineer.toml`
+- `bugfix-evidence-collector.toml`
+- `bugfix-investigator.toml`
 - `efficiency-expert.toml`
 - `quality-lead.toml`
 - `quality-engineer.toml`
@@ -32,3 +34,5 @@ config_file = "subagents/architect.toml"
 ```
 
 Note: `config_file` path is resolved relative to the config file that declares the agent.
+
+The BugFix roles pin safe standalone defaults: `bugfix-evidence-collector` uses Luna with low reasoning and `bugfix-investigator` uses Sol with high reasoning. The `bug-fix` orchestrator may explicitly override the collector to Terra for complex acquisition or the investigator to Sol-medium/Terra-xhigh when its routing criteria apply.

@@ -1,18 +1,18 @@
 {
   "name": "team-delivery",
   "version": "0.2.0",
-  "description": "Coordinate bounded engineering delivery with mandatory independent batched code review and targeted delivery safeguards.",
+  "description": "Coordinate bounded engineering delivery and evidence-driven bug fixing with mandatory independent batched code review and targeted safeguards.",
   "author": {
     "name": "cheatr01"
   },
   "skills": "./skills/",
   "interface": {
     "displayName": "Team Delivery",
-    "shortDescription": "Coordinate safe, focused engineering delivery.",
-    "longDescription": "Plan and run bounded engineering increments with mandatory independent batched code review and only the governance, validation, and parallel-work safeguards the change requires.",
+    "shortDescription": "Coordinate delivery and evidence-driven bug fixes.",
+    "longDescription": "Plan bounded engineering increments or investigate defects through adaptive evidence collection, root-cause analysis, verified implementation, mandatory independent batched review, and targeted delivery safeguards.",
     "developerName": "cheatr01",
     "category": "Productivity",
     "capabilities": [],
-    "defaultPrompt": "Coordinate this bounded engineering increment."
+    "defaultPrompt": "Coordinate this bounded engineering increment or bug fix."
   }
 }

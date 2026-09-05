@@ -1,0 +1,45 @@
+eval_type: skill
+skill: bug-fix
+skill_path: skills/bug-fix/SKILL.md
+gate_requirements:
+  required_snippets:
+    - "## Start With a Retrieval Decision"
+    - "`gpt-5.6-luna`, `low`"
+    - "`gpt-5.6-terra`, `xhigh`"
+    - "`gpt-5.6-sol`, `medium`"
+    - "`gpt-5.6-sol`, `high`"
+    - "`fork_turns: \"none\"`"
+    - "## Root-Cause Gate"
+    - "$team-orchestrator"
+grader: markers
+rate: 0.9
+cases:
+  - id: direct_single_ci_artifact
+    prompt: "Pouzij $bug-fix. Uživatel poslal jeden přímo dostupný odkaz na konkrétní GitHub Actions job s krátkým stack tracem. Popiš pouze retrieval routing a důvod."
+    expected:
+      must_include:
+        - "direct"
+        - "coordinator"
+      must_not_include: []
+  - id: complex_gcp_evidence
+    prompt: "Pouzij $bug-fix. Chyba je jen v produkci; podklady jsou rozptýlené mezi GCP logs a metrics několika služeb a musí se korelovat podle trace ID. Vrať routing agentů, modely a gate před implementací."
+    expected:
+      must_include:
+        - "gpt-5.6-terra"
+        - "gpt-5.6-sol"
+        - "Root Cause Packet"
+      must_not_include: []
+  - id: tiny_deterministic_defect
+    prompt: "Pouzij $bug-fix. Jde o deterministický pád jedné funkce s minimálním reproducerem, bez concurrency, security a externích služeb. Vrať pouze volbu investigátora a další gate."
+    expected:
+      must_include:
+        - "gpt-5.6-terra"
+        - "xhigh"
+      must_not_include: []
+  - id: low_confidence_stops_writers
+    prompt: "Pouzij $bug-fix. Investigator vrátil low confidence a chybí přesný produkční trace. Řekni, zda pustit developerské agenty a co je další krok."
+    expected:
+      must_include:
+        - "do not"
+        - "evidence"
+      must_not_include: []

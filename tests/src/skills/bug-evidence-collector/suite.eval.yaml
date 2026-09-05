@@ -1,0 +1,20 @@
+eval_type: skill
+skill: bug-evidence-collector
+skill_path: skills/bug-evidence-collector/SKILL.md
+gate_requirements:
+  required_snippets:
+    - "Stay read-only"
+    - "Do not diagnose"
+    - "## Evidence Packet"
+    - "Gaps / access blockers"
+grader: markers
+rate: 1.0
+cases:
+  - id: evidence_packet_only
+    prompt: "Pouzij $bug-evidence-collector pro dlouhý CI log a dokumentaci runtime. Vrať strukturu výstupu a hranice role; příčinu zatím neurčuj."
+    expected:
+      must_include:
+        - "Evidence Packet"
+        - "Sources"
+        - "Gaps"
+      must_not_include: []

@@ -69,6 +69,8 @@ ROLE_FILES=(
   "app-designer.toml"
   "backend-engineer.toml"
   "frontend-engineer.toml"
+  "bugfix-evidence-collector.toml"
+  "bugfix-investigator.toml"
   "efficiency-expert.toml"
   "quality-lead.toml"
   "quality-engineer.toml"
@@ -90,6 +92,8 @@ description_from_section() {
     app-designer) echo "App/mobile design system and tokens specialist." ;;
     backend-engineer) echo "Backend implementation specialist." ;;
     frontend-engineer) echo "Frontend implementation specialist." ;;
+    bugfix-evidence-collector) echo "Read-only bug evidence collection specialist." ;;
+    bugfix-investigator) echo "Evidence-backed root-cause investigation specialist." ;;
     efficiency-expert) echo "Performance and efficiency specialist." ;;
     quality-lead) echo "Quality strategy and gate owner." ;;
     quality-engineer) echo "Automated testing and defect reproduction specialist." ;;
