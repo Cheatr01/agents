@@ -10,6 +10,7 @@ gate_requirements:
     - "## Engineering-Brief Preflight"
     - "Token budget:"
     - "Product/discovery skills may prepare that brief separately"
+    - "`independent-code-review`: mandatory after every code diff"
 grader: markers
 rate: 0.875
 cases:
