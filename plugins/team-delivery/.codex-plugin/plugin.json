@@ -1,7 +1,7 @@
 {
   "name": "team-delivery",
   "version": "0.2.0",
-  "description": "Coordinate bounded engineering delivery and evidence-driven bug fixing with targeted gates and parallel-work safeguards.",
+  "description": "Coordinate bounded engineering delivery and evidence-driven bug fixing with mandatory independent batched code review and targeted safeguards.",
   "author": {
     "name": "cheatr01"
   },
@@ -9,7 +9,7 @@
   "interface": {
     "displayName": "Team Delivery",
     "shortDescription": "Coordinate delivery and evidence-driven bug fixes.",
-    "longDescription": "Plan and run bounded engineering increments or investigate defects through adaptive evidence collection, root-cause analysis, verified implementation, and the safeguards the change requires.",
+    "longDescription": "Plan bounded engineering increments or investigate defects through adaptive evidence collection, root-cause analysis, verified implementation, mandatory independent batched review, and targeted delivery safeguards.",
     "developerName": "cheatr01",
     "category": "Productivity",
     "capabilities": [],

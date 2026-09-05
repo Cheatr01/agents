@@ -78,7 +78,7 @@ When the user requested a fix and the root-cause gate passes, convert the Root C
 - validation: reproducer plus the smallest relevant regression checks; and
 - constraints: compatibility, security, performance, rollout, or manual-system requirements.
 
-Then follow `$team-orchestrator` for writer selection, ownership, implementation, validation, and any review gate it selects. Reuse its delivery ledger for multi-turn or multi-agent work. Do not rerun product discovery, and do not reopen the diagnosis unless implementation evidence contradicts the Root Cause Packet.
+Then follow `$team-orchestrator` for writer selection, ownership, implementation, validation, and mandatory independent code review. Reuse its delivery ledger for multi-turn or multi-agent work. Do not rerun product discovery, and do not reopen the diagnosis unless implementation evidence contradicts the Root Cause Packet.
 
 If implementation contradicts the diagnosis, stop writers, preserve the new evidence, and return once to the investigator with the specific contradiction. Avoid a loop of speculative repair attempts.
 
@@ -96,4 +96,4 @@ Repair: <not authorized | blocked | Team Delivery status>
 Contradiction budget: unused | used
 ```
 
-Complete with the root cause, changed components, validation evidence, review status when applicable, and explicit residual risk.
+Complete with the root cause, changed components, validation evidence, independent-review status when code changed, and explicit residual risk.

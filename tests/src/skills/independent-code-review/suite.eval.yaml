@@ -1,0 +1,30 @@
+eval_type: skill
+skill: independent-code-review
+skill_path: skills/independent-code-review/SKILL.md
+gate_requirements:
+  required_snippets:
+    - "Never self-review."
+    - "## Batch protocol"
+    - "business-flow notice"
+    - "At most five complete review iterations"
+    - "must not exceed the measured implementation consumption"
+    - "directly to the pull request"
+grader: markers
+rate: 0.875
+cases:
+  - id: batch_review_and_fix
+    prompt: "Pouzij $independent-code-review na hotovy diff. Najdi vsechny problemy, vrat je najednou orchestratorovi a po jejich oprave zkontroluj cely diff znovu."
+    expected:
+      must_include:
+        - "complete"
+        - "batch"
+        - "five"
+      must_not_include: []
+  - id: business_flow_and_pr_reporting
+    prompt: "Pouzij $independent-code-review na pull request, ktery meni platebni flow. Zapis nalezy do pull requestu az po dokonceni review."
+    expected:
+      must_include:
+        - "business"
+        - "pull request"
+        - "after"
+      must_not_include: []

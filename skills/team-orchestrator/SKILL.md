@@ -30,9 +30,9 @@ Product/discovery skills may prepare that brief separately, but are not a phase 
 ## Default Operating Mode
 
 - Use one lead agent and one branch unless parallel work has a clear dependency boundary.
-- Use Terra for routine implementation, inspection, Git operations, and test coordination. Reserve Sol for an architecture decision, a security decision, or final high-risk review.
-- Do not create a subagent, GitHub issue, worktree, or reviewer unless the user explicitly requests it or the delivery score requires it. In the current Codex environment, respect the platform's delegation rules.
-- When subagents are authorized, use at most two writers and one independent reviewer. Give every subagent `fork_turns: none` and only: objective, owned files, relevant interfaces, constraints, and one validation command.
+- Use Terra for routine implementation, inspection, Git operations, and test coordination. Reserve Sol for an architecture decision, a security decision, or a large independent code review.
+- Create an independent reviewer for every increment that changes code. The reviewer is mandatory even for a small diff, must not have authored, edited, or directed the implementation, and follows `independent-code-review`. In the current Codex environment, respect the platform's delegation rules.
+- When subagents are authorized, use at most two writers and one independent reviewer. Give every subagent `fork_turns: none` and only: objective, owned files, relevant interfaces, constraints, and one validation command. For the reviewer also provide the original task, non-goals, complete diff range, and review-token cap—never the implementer's conclusions or proposed fixes.
 - Keep a short external delivery ledger in the repository or task artifact. Use `references/delivery-ledger.md` when creating one; do not reconstruct state from long thread history.
 
 ## Triage and Budget
@@ -43,8 +43,8 @@ Set a token budget before delegating. Use the platform's actual token counter wh
 
 | Condition | Default delivery shape |
 | --- | --- |
-| C/R/E all low; one bounded change | One agent, focused validation, no formal gate |
-| One real interface, UI, or regression risk | Lead plus one targeted specialist or reviewer |
+| C/R/E all low; one bounded change | One agent, focused validation, independent code review |
+| One real interface, UI, or regression risk | Lead plus an independent reviewer and, if needed, one targeted specialist |
 | Independent file areas with a frozen interface | Up to two writers in isolated worktrees |
 | Auth, sensitive data, public API, migration, or architectural change | Add the relevant architecture/security gate before implementation |
 
@@ -72,14 +72,15 @@ Load exactly the needed supporting skill; do not load every governance skill.
 - `threat-model-baseline` and `security-gate-runbook`: auth, secrets, permissions, sensitive data, external execution, or a material security finding is involved.
 - `quality-gate-matrix`: the changed behaviour has non-obvious regression risk or a release decision needs evidence.
 - `performance-regression-lab`: an SLO, benchmark, or observed regression exists.
+- `independent-code-review`: mandatory after every code diff. It is a separate, batch-only review loop with its own five-round and token limits; do not replace it with lead self-review.
 - `gh-subtask-breakdown`, `issue-branch-guard`, `worktree-isolation`, and `integration-merge-governor`: only for user-requested GitHub traceability or two or more concurrent writers.
 
 ## Execution and Validation Budget
 
 1. Implement the smallest vertical slice that proves the user outcome.
 2. Each writer runs one focused check after its last code change.
-3. The lead reviews the changed files and repeats a focused check only if code changed after the writer's evidence.
-4. After integration, run the full suite once and packaging/build once when relevant. Do not repeat equivalent green runs.
+3. After integration, run the full suite once and packaging/build once when relevant. Do not repeat equivalent green runs.
+4. Run `independent-code-review` against the complete diff. It reports all findings as one batch; fixes, if requested, are also one batch and require a new full-diff review round.
 5. When the project has a required UI, hardware, permission, or external-system check, run that project's manual smoke gate immediately after the vertical slice.
 6. Mark every capability `automated`, `packaged`, `manual`, or `not tested`. Never infer manual success from unit tests.
 
@@ -87,7 +88,7 @@ Use `scripts/run-compact.sh <label> [--history <path>] -- <command ...>` for ver
 
 ## Escalation and Stop Rules
 
-Re-score and add only the missing expertise when a new auth/data boundary, breaking interface, material defect, or measured regression appears. Do not re-run discovery, all freezes, or all reviewers merely because any file changed.
+Re-score and add only the missing expertise when a new auth/data boundary, breaking interface, material defect, or measured regression appears. Do not re-run discovery or all freezes merely because any file changed. After a code-review repair batch, re-run the mandatory independent review over the complete diff as specified by `independent-code-review`; stop at its five-round or review-token limit and alert the user.
 
 Stop and ask the user when a decision changes product scope, external cost, production state, or risk acceptance. Stop at a required manual hardware gate until the user can perform it.
 
@@ -98,7 +99,7 @@ Return a compact handoff:
 ```
 Outcome: <done / blocked>
 Changed: <files or components>
-Evidence: <focused/full/build/manual status>
+Evidence: <focused/full/build/manual/review-round status>
 Residual risk: <none or explicit>
 Next increment: <one bounded next step, if any>
 ```
