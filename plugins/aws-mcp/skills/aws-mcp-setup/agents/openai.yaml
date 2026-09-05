@@ -1,0 +1,4 @@
+interface:
+  display_name: "AWS MCP Setup"
+  short_description: "Set up managed AWS MCP access safely"
+  default_prompt: "Use $aws-mcp-setup to configure AWS MCP for this Codex host."

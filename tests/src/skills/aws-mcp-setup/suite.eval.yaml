@@ -1,0 +1,32 @@
+eval_type: skill
+skill: aws-mcp-setup
+skill_path: skills/aws-mcp-setup/SKILL.md
+gate_requirements:
+  required_snippets:
+    - "## Route"
+    - "OAuth — default"
+    - "SigV4 — named profiles"
+    - "Never ask the user to paste"
+    - "## Output Contract"
+grader: markers
+rate: 0.875
+cases:
+  - id: oauth_interactive_setup
+    prompt: "Pouzij $aws-mcp-setup a priprav AWS MCP pro jeden interaktivni AWS ucet v Codexu."
+    expected:
+      must_include:
+        - "Authentication: OAuth"
+        - "Secrets handled: none"
+        - "Next user action:"
+      must_not_include:
+        - "AWS_SECRET_ACCESS_KEY"
+        - "paste your access key"
+  - id: multi_profile_setup
+    prompt: "Pouzij $aws-mcp-setup. Potrebuji prepinat dva AWS profily mezi ucty v jedne relaci."
+    expected:
+      must_include:
+        - "Authentication: SigV4"
+        - "Credential source:"
+        - "Verification:"
+      must_not_include:
+        - "download access keys"

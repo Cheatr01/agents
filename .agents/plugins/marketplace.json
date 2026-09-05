@@ -32,7 +32,7 @@
       "name": "aws-mcp",
       "source": {
         "source": "local",
-        "path": "./skills/aws-mcp"
+        "path": "./plugins/aws-mcp"
       },
       "policy": {
         "installation": "AVAILABLE",
