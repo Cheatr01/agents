@@ -11,6 +11,8 @@ gate_requirements:
     - "Token budget:"
     - "Product/discovery skills may prepare that brief separately"
     - "`independent-code-review`: mandatory after every code diff"
+    - "## Delegation Lifecycle Ownership"
+    - "do not return a progress-only final response"
 grader: markers
 rate: 0.875
 cases:
@@ -29,3 +31,11 @@ cases:
         - "Risk:"
         - "security"
       must_not_include: []
+  - id: review_waits_to_handoff
+    prompt: "Pouzij $team-orchestrator. Implementace je hotova a nezavisly review subagent prave bezi. Dokonci tento increment vcetne zpracovani vysledku review."
+    expected:
+      must_include:
+        - "wait"
+        - "review"
+      must_not_include:
+        - "review is running"
