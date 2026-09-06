@@ -35,6 +35,19 @@ Product/discovery skills may prepare that brief separately, but are not a phase 
 - When subagents are authorized, use at most two writers and one independent reviewer. Give every subagent `fork_turns: none` and only: objective, owned files, relevant interfaces, constraints, and one validation command. For the reviewer also provide the original task, non-goals, complete diff range, and review-token cap—never the implementer's conclusions or proposed fixes.
 - Keep a short external delivery ledger in the repository or task artifact. Use `references/delivery-ledger.md` when creating one; do not reconstruct state from long thread history.
 
+## Delegation Lifecycle Ownership
+
+The lead owns every delegated dependency until it reaches a terminal state and its result has been incorporated. Delegating a writer, reviewer, or gate is not a handoff of the increment to the user.
+
+- Record each dispatched dependency, owner, expected result, and state in the delivery ledger before waiting.
+- After dispatching work, use the platform's event-driven wait/wake facility. When it wakes for a child result, reconcile the result with the ledger and immediately perform or dispatch the next prerequisite step. Then wait again if another dependency remains.
+- A wait timeout, an unchanged status, or a commentary update is not completion. Resume a bounded event wait; do not return a progress-only final response such as “the review is running” while the increment is still actionable.
+- Do not emit the completion record, end the task, or leave it idle while a tracked dependency is running, queued, needs a follow-up, or has produced an unresolved finding. The only exceptions are an explicit stop rule, an unavailable platform dependency, or a user decision that is actually required.
+- If the platform cannot keep an event wait alive through the dependency's expected duration, create a quiet, per-increment thread wake-up/heartbeat that reopens the delivery ledger, reconciles dependency state, and advances the next action. Keep it quiet while nothing has changed; disable it at a terminal outcome. Do not use a recurring monitor as a substitute for an available direct wait.
+- A reviewer finding remains lead-owned: dispatch or make the repair, run the required validation, then dispatch the next full-diff review round. Do not merely report that a review completed and wait for the user to ask the lead to continue.
+
+The increment may complete only when all tracked dependencies are terminal and the resulting required validation, review, and handoff work is complete.
+
 ## Triage and Budget
 
 Score only when coordination or a gate decision is needed. Use `C × R × E` from `orchestration-scorekeeper`, but treat the result as validation intensity—not a mandatory team size.
@@ -94,7 +107,7 @@ Stop and ask the user when a decision changes product scope, external cost, prod
 
 ## Completion Record
 
-Return a compact handoff:
+Return a compact handoff only after the delegation lifecycle is terminal:
 
 ```
 Outcome: <done / blocked>
