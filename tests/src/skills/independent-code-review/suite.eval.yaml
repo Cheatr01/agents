@@ -7,7 +7,6 @@ gate_requirements:
     - "## Batch protocol"
     - "business-flow notice"
     - "At most five complete review iterations"
-    - "must not exceed the measured implementation consumption"
     - "directly to the pull request"
 grader: markers
 rate: 0.875

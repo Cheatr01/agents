@@ -32,7 +32,7 @@ Product/discovery skills may prepare that brief separately, but are not a phase 
 - Use one lead agent and one branch unless parallel work has a clear dependency boundary.
 - Use Terra for routine implementation, inspection, Git operations, and test coordination. Reserve Sol for an architecture decision, a security decision, or a large independent code review.
 - Create an independent reviewer for every increment that changes code. The reviewer is mandatory even for a small diff, must not have authored, edited, or directed the implementation, and follows `independent-code-review`. In the current Codex environment, respect the platform's delegation rules.
-- When subagents are authorized, use at most two writers and one independent reviewer. Give every subagent `fork_turns: none` and only: objective, owned files, relevant interfaces, constraints, and one validation command. For the reviewer also provide the original task, non-goals, complete diff range, and review-token cap—never the implementer's conclusions or proposed fixes.
+- When subagents are authorized, use at most two writers and one independent reviewer. Give every subagent `fork_turns: none` and only: objective, owned files, relevant interfaces, constraints, and one validation command. For the reviewer also provide the original task, non-goals, and complete diff range—never the implementer's conclusions or proposed fixes.
 - Keep a short external delivery ledger in the repository or task artifact. Use `references/delivery-ledger.md` when creating one; do not reconstruct state from long thread history.
 
 ## Delegation Lifecycle Ownership
@@ -48,11 +48,11 @@ The lead owns every delegated dependency until it reaches a terminal state and i
 
 The increment may complete only when all tracked dependencies are terminal and the resulting required validation, review, and handoff work is complete.
 
-## Triage and Budget
+## Triage and Delivery Shape
 
 Score only when coordination or a gate decision is needed. Use `C × R × E` from `orchestration-scorekeeper`, but treat the result as validation intensity—not a mandatory team size.
 
-Set a token budget before delegating. Use the platform's actual token counter when it is available; otherwise label it `estimated` and enforce the proxy limits in `references/delivery-budget.md`. Never claim an estimate is measured usage.
+When delegation is needed, use the compact execution and validation controls in `references/delivery-budget.md`.
 
 | Condition | Default delivery shape |
 | --- | --- |
@@ -67,7 +67,6 @@ State the following compact plan before writing:
 Increment: <one milestone or 1–3 linked issues>
 Scope / non-goal: <one line each>
 Risk: C=<n> R=<n> E=<n>, only if scored
-Token budget: <measured or estimated> <limit>; spent=<value or unavailable>
 Agents: <names and bounded ownership, or none>
 Gates: <only gates triggered by this change>
 Validation budget: worker=<focused>; integration=<once>; manual=<needed/not needed>
@@ -85,7 +84,7 @@ Load exactly the needed supporting skill; do not load every governance skill.
 - `threat-model-baseline` and `security-gate-runbook`: auth, secrets, permissions, sensitive data, external execution, or a material security finding is involved.
 - `quality-gate-matrix`: the changed behaviour has non-obvious regression risk or a release decision needs evidence.
 - `performance-regression-lab`: an SLO, benchmark, or observed regression exists.
-- `independent-code-review`: mandatory after every code diff. It is a separate, batch-only review loop with its own five-round and token limits; do not replace it with lead self-review.
+- `independent-code-review`: mandatory after every code diff. It is a separate, batch-only review loop with a five-round limit; do not replace it with lead self-review.
 - `gh-subtask-breakdown`, `issue-branch-guard`, `worktree-isolation`, and `integration-merge-governor`: only for user-requested GitHub traceability or two or more concurrent writers.
 
 ## Execution and Validation Budget
@@ -101,7 +100,7 @@ Use `scripts/run-compact.sh <label> [--history <path>] -- <command ...>` for ver
 
 ## Escalation and Stop Rules
 
-Re-score and add only the missing expertise when a new auth/data boundary, breaking interface, material defect, or measured regression appears. Do not re-run discovery or all freezes merely because any file changed. After a code-review repair batch, re-run the mandatory independent review over the complete diff as specified by `independent-code-review`; stop at its five-round or review-token limit and alert the user.
+Re-score and add only the missing expertise when a new auth/data boundary, breaking interface, material defect, or measured regression appears. Do not re-run discovery or all freezes merely because any file changed. After a code-review repair batch, re-run the mandatory independent review over the complete diff as specified by `independent-code-review`; stop at its five-round limit and alert the user.
 
 Stop and ask the user when a decision changes product scope, external cost, production state, or risk acceptance. Stop at a required manual hardware gate until the user can perform it.
 

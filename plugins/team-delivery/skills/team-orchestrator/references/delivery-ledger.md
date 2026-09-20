@@ -13,7 +13,6 @@ Dependencies: <owner; expected result; state=queued|running|result received|reso
 Evidence: focused=<status>; integration=<status>; build=<status>; manual=<status>
 Review: round=<n>/5; range=<base...head>; reviewer=<agent/model>; findings=<none or record>
 Risk: C=<n> R=<n> E=<n>; change=<none or reason>
-Token budget: <measured|estimated> <limit>; spent=<value|unavailable>
 Check history: <path or none>
 Next: <one bounded action>
 Blocked: <none or user decision>
