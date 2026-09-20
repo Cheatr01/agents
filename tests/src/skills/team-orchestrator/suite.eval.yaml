@@ -8,7 +8,6 @@ gate_requirements:
     - "`fork_turns: none`"
     - "run the full suite once"
     - "## Engineering-Brief Preflight"
-    - "Token budget:"
     - "Product/discovery skills may prepare that brief separately"
     - "`independent-code-review`: mandatory after every code diff"
     - "## Delegation Lifecycle Ownership"
